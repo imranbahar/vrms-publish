@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Start the app with a 256MB memory limit
-ENTRYPOINT ["java", "-Xmx256m", "-jar", "app.jar", "--server.port=10000", "--server.address=0.0.0.0"]
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xss512k", "-Xmx300m", "-jar", "app.jar", "--server.port=10000", "--server.address=0.0.0.0"]
