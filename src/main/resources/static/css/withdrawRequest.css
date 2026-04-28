@@ -1,0 +1,84 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+.container-fluid {
+    display: flex;
+    height: 45vh;
+}
+.center-panel {
+    text-align: center;
+    background-color: #e74c3c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    border-radius: 10px;
+    width: 400px;         /* Fixed width for desktop */
+    min-height: 380px;    /* Minimum height for the box */
+    margin: 40px auto;    /* Center horizontally with margin */
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    padding: 32px 24px;
+}
+
+@media (max-width: 600px) {
+    .center-panel {
+        width: 95vw;      /* Responsive width on small screens */
+        min-height: 320px;
+        padding: 20px 8px;
+    }
+}
+
+.left-panel {
+    background-color: #e74c3c; /* Red panel */
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    padding: 20px;
+  
+}
+.right-panel {
+    
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    color: #444;
+}
+.form-group label {
+    font-weight: bold;
+}
+.form-control {
+    margin-bottom: 15px;
+}
+.btn-cancel {
+    background-color: white;
+    color: black;
+    border: none;
+    margin-right: 10px;
+}
+.btn-register {
+    background-color: white;
+    color: black;
+    border: none;
+}
+.btn:hover {
+    opacity: 0.9;
+}
+.right-panel h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.right-panel p {
+    margin-top: 5px;
+    font-size: 1.2rem;
+}

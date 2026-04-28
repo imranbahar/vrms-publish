@@ -1,0 +1,36 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userDL.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Upload User Drving License</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body>
+    <div class="left-panel">
+        <div class="container">
+            <h1>Upload Your Drving License Picture</h1>
+            <form action="#" th:action="@{/userDL}" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="userID" th:value="${userID}">
+                <div class="form-group">
+                    
+                    <input type="file" class="form-control" id="userDL" name="userDL" required>
+                </div>
+                <button type="button" class="btn btn-secondary"
+                        th:onclick="'window.location.href=\'/cancelUserRegister?userID=' + ${userID} + '\''">
+                    CANCEL
+                </button>
+                <button type="submit" class="btn btn-primary">UPLOAD</button>
+            </form>
+        </div>
+    </div>
+    <div class="right-panel">
+        <h2>WELCOME TO</h2>
+        <h2>VEHICLE SHARING</h2>
+        <h2>MANAGEMENT</h2>
+        <h2>SERVICE SYSTEM</h2>
+        <p>Rent your desired vehicle to rent</p>
+    </div>
+</body>
+</html>

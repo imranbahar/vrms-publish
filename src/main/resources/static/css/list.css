@@ -1,0 +1,107 @@
+.table {
+  width: 100%;
+  min-width: 1200px; /* Make table wider */
+  border-collapse: collapse;
+  margin: 2rem 0;
+  font-size: 1rem;
+  background: #fff;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  table-layout: auto;
+}
+
+.table th, .table td {
+  padding: 0.7rem 0.5rem;
+  text-align: center;
+  vertical-align: middle;
+  word-break: normal;
+  overflow-wrap: normal;
+  max-width: 350px;
+  white-space: nowrap;         /* Prevent line breaks */
+  overflow: hidden;            /* Hide overflowed text */
+  text-overflow: ellipsis;     /* Show ... for overflowed text */
+}
+
+.table th {
+  background: #d32f2f;
+  color: #fff;
+  font-weight: bold;
+  border-bottom: 2px solid #fff;
+  font-size: 1.05rem;
+}
+
+.table td img {
+  max-width: 80px;
+  max-height: 60px;
+  width: auto;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.table td {
+  padding: 0.9rem 1rem;
+  text-align: center;
+  color: #222;
+}
+
+.table tr:nth-child(even) {
+  background: #fff7f0; /* very light orange */
+}
+
+.table tr:nth-child(odd) {
+  background: #fff; /* white */
+}
+
+.table tr:hover {
+  background: #ffe5e5 !important; /* light red on hover */
+}
+
+@media (max-width: 1200px) {
+  .table {
+    min-width: 900px;
+    
+    display: block;
+  }
+}
+/* .address-cell {
+    white-space: normal !important; 
+    word-break: break-word;
+    max-width: 180px;
+    min-width: 120px;
+    line-height: 1.2;
+} */
+/* Responsive: Stack table on small screens */
+/* @media (max-width: 1200px) {
+    .table {
+        min-width: 900px;
+        overflow-x: auto;
+        display: block;
+  }
+
+  .table, .table thead, .table tbody, .table th, .table td, .table tr {
+    display: block;
+  }
+  .table thead tr {
+    display: none;
+  }
+  .table td {
+    position: relative;
+    padding-left: 50%;
+    min-height: 40px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  .table td:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48%;
+    padding-left: 0.5rem;
+    white-space: nowrap;
+    font-weight: bold;
+    color: #d32f2f;
+    content: attr(data-label);
+  }
+} */

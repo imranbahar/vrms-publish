@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Vehicle Rentals</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/review.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <link rel="stylesheet" href="/css/button.css">
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="container">
+        <div class="btn-group mb-3" role="group">
+            <a th:href="@{/voRentalList(userID=${userID}, tab='rental')}" class="btn btn-outline-primary" th:classappend="${tab}=='rental' ? 'active' : ''">Vehicle Rentals</a>
+            <a th:href="@{/voRentalList(userID=${userID}, tab='withdraw')}" class="btn btn-outline-primary" th:classappend="${tab}=='withdraw' ? 'active' : ''">Withdraw List</a>
+        </div>
+
+        <!-- Vehicle Rentals Tab -->
+        <div th:if="${tab} == 'rental'">
+            <h1>My Vehicle Rentals</h1>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search rentals...">
+                </div>
+                <div class="col-md-2">
+                    <select id="sortPrice" class="form-control">
+                        <option value="" disabled selected>Sort by Total Price</option>
+                        <option value="expensive">Expensive - Cheapest</option>
+                        <option value="cheapest">Cheapest - Expensive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="sortDate" class="form-control">
+                        <option value="" disabled selected>Sort by End Date</option>
+                        <option value="newest">Newest - Oldest</option>
+                        <option value="oldest">Oldest - Newest</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="sortDuration" class="form-control">
+                        <option value="" disabled selected>Sort by Duration</option>
+                        <option value="quickest">Quickest - Longest</option>
+                        <option value="longest">Longest - Quickest</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="filterType" class="form-control">
+                        <option value="">All Types</option>
+                        <option value="motorcycle">Motorcycle</option>
+                        <option value="car">Car</option>
+                        <option value="van">Van</option>
+                        <option value="bus">Bus</option>
+                        <option value="lorry">Lorry</option>
+                    </select>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-striped" id="rentalTable">
+                    <thead>
+                        <tr>
+                            <th>Plate Number</th>
+                            <th>Vehicle Picture</th>
+                            <th>Location</th>
+                            <th>Renter Name</th>
+                            <th>Renter Email</th>
+                            <th>Renter Phone</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Duration</th>
+                            <th>Total Price</th>
+                            <th>Payment Type</th>
+                            <th>Review</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="rental : ${voRentals}">
+                            <td data-label="Plate Number" th:text="${rental.vehicle.vehiclePlateNumber}">Vehicle Plate Number</td>
+                            <td style="display:none;" th:text="${rental.vehicle.vehicleType}"></td>
+                            <td data-label="Vehicle Picture">
+                                <img th:src="'data:image/jpeg;base64,' + ${rental.vehicle.vehiclePicString}" alt="Vehicle Image" style="width: 100px; height: 80px;" />
+                            </td>
+                            <td data-label="Location" th:text="${rental.vehicle.vehicleAddress}">Location</td>
+                            <td data-label="Renter Name" th:text="${rental.user.userName}">Renter Name</td>
+                            <td data-label="Renter Email" th:text="${rental.user.userEmail}">Renter Email</td>
+                            <td data-label="Renter Phone" th:text="${rental.user.userPhoneNumber}">Renter Phone</td>
+                            <td data-label="Start Date" th:text="${rental.startDate}">Start Date</td>
+                            <td data-label="End Date" th:text="${rental.endDate}">End Date</td>
+                            <td data-label="Start Time" th:text="${rental.startTime}">Start Time</td>
+                            <td data-label="End Time" th:text="${rental.endTime}">End Time</td>
+                            <td data-label="Duration" th:text="${rental.duration}">Duration</td>
+                            <td data-label="Total Price" th:text="${#numbers.formatDecimal(rental.totalPrice, 1, 'COMMA', 2, 'POINT')}">Total Price</td>
+                            <td data-label="Payment Type" th:text="${rental.paymentType}">Payment Type</td>
+                            <td data-label="Review">
+                                <div th:if="${reviewMap[rental.rentalID] != null}">
+                                    <b>Rating:</b>
+                                    <span class="star-rating" th:utext="${'&#9733;'.repeat(reviewMap[rental.rentalID].rating)}"></span>
+                                    <br>
+                                    <b>Comment:</b> <span th:text="${reviewMap[rental.rentalID].comment}"></span>
+                                </div>
+                            </td>
+                        </tr>
+                        <div id="imgModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.8);">
+                            <span style="position:absolute;top:20px;right:35px;color:#fff;font-size:40px;font-weight:bold;cursor:pointer;" onclick="closeModalImage()">&times;</span>
+                            <img id="modalImg" style="margin:auto;display:block;max-width:80%;max-height:80%;position:absolute;top:0;left:0;right:0;bottom:0;">
+                        </div>
+                    </tbody>
+                </table>
+            </div>
+            <div class="d-flex justify-content-end mt-3" style="gap: 1rem;">
+                <div class="card" style="width: 22rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Accumulated Money</h5>
+                        <h3 class="card-text text-primary">
+                            RM <span th:text="${#numbers.formatDecimal(totalMoney, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                        </h3>
+                    </div>
+                </div>
+                <div class="card" style="width: 22rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total To Withdraw</h5>
+                        <h3 class="card-text text-success">
+                            RM <span th:text="${#numbers.formatDecimal(totalToWithdraw, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                        </h3>
+                        <form th:action="@{/withdrawRequest}" method="get">
+                            <input type="hidden" name="userID" th:value="${userID}" />
+                            <input type="hidden" name="maxAmount" th:value="${totalToWithdraw}" />
+                            <button type="submit" class="btn btn-success mt-2"
+                                    th:if="${totalToWithdraw > 1}">Withdraw Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Withdraw List Tab -->
+        <div th:if="${tab} == 'withdraw'">
+            <h1>My Withdraw Requests</h1>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <input type="text" id="withdrawSearchInput" class="form-control" placeholder="Search withdraws...">
+                </div>
+                <div class="col-md-2">
+                    <select id="withdrawSortAmount" class="form-control">
+                        <option value="">Sort by Amount</option>
+                        <option value="highest">Highest - Lowest</option>
+                        <option value="lowest">Lowest - Highest</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select id="withdrawFilterStatus" class="form-control">
+                        <option value="">All Status</option>
+                        <option value="requested">Requested</option>
+                        <option value="completed">Completed</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="table table-bordered mt-3" id="withdrawTable">
+                    <thead>
+                        <tr>
+                            <th>Withdraw Amount</th>
+                            <th>Status</th>
+                            <th>Receipt</th>
+                            <th>Manager Name</th>
+                            <th>Manager Phone</th>
+                            <th>Manager Email</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="withdraw : ${withdraws}">
+                            <td data-label="Withdraw Amount" th:text="${withdraw.withdrawAmount}">Amount</td>
+                            <td data-label="Status" th:text="${withdraw.withdrawStatus}">Status</td>
+                            <td data-label="Receipt">
+                                <span th:if="${withdraw.receiptPdf != null}">
+                                    <a th:href="@{/previewReceipt(withdrawID=${withdraw.withdrawID})}" target="_blank">Preview PDF</a>
+                                </span>
+                                <span th:if="${withdraw.receiptPdf == null}">No Receipt</span>
+                            </td>
+                            <td data-label="Manager Name" th:text="${(withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID]?.userName : ''}">Manager Name</td>
+                            <td data-label="Manager Phone" th:text="${(withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID]?.userPhoneNumber : ''}">Manager Phone</td>
+                            <td data-label="Manager Email" th:text="${(withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID]?.userEmail : ''}">Manager Email</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex justify-content-end mt-3">
+                <div class="card" style="width: 22rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Withdraw Requested</h5>
+                        <h3 class="card-text text-primary">
+                            RM <span th:text="${#numbers.formatDecimal(totalWithdrawn, 1, 'COMMA', 2, 'POINT')}">0.00</span>
+                        </h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       <!-- <button type="button" class="btn btn-primary mt-3" th:onclick="'window.location.href=\'/vehicleOwnerHome?userID=' + ${userID} + '\''">Back to Home</button>-->
+    </div>
+   
+    <script>
+    // Success message for owner booking
+    if (window.location.search.includes('bookSuccess=true')) {
+        Swal.fire({
+            icon: "success",
+            title: "Your Booking is Successful",
+            showConfirmButton: false,
+            timer: 1500
+        });
+
+    }
+
+    // Rental Search and filter functionality
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    document.getElementById('sortPrice').addEventListener('change', filterTable);
+    document.getElementById('sortDate').addEventListener('change', filterTable);
+    document.getElementById('sortDuration').addEventListener('change', filterTable);
+    document.getElementById('filterType').addEventListener('change', filterTable);
+
+    function parseDuration(durationStr) {
+        // Example: "1 days 2 hours" or "3 hours"
+        let days = 0, hours = 0;
+        if (!durationStr) return 0;
+        let dayMatch = durationStr.match(/(\d+)\s*day/);
+        let hourMatch = durationStr.match(/(\d+)\s*hour/);
+        if (dayMatch) days = parseInt(dayMatch[1]);
+        if (hourMatch) hours = parseInt(hourMatch[1]);
+        return days * 24 + hours;
+    }
+
+    function filterTable() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var sortPrice = document.getElementById('sortPrice').value;
+        var sortDate = document.getElementById('sortDate').value;
+        var sortDuration = document.getElementById('sortDuration').value;
+        var filterType = document.getElementById('filterType').value.toLowerCase();
+        var table = document.getElementById('rentalTable');
+        var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // skip header
+
+        // Filter rows
+        rows.forEach(function(row) {
+            var cells = row.getElementsByTagName('td');
+            var type = cells[0].innerText.toLowerCase(); // Plate Number, adjust if needed
+            var vehicleType = cells[1].innerText.toLowerCase();
+            var price = parseFloat(cells[10].innerText.replace(/[^0-9.]/g, '')) || 0; // Total Price
+            var endDate = cells[6].innerText; // End Date
+            var endTime = cells[8].innerText; // End Time
+            var duration = parseDuration(cells[9].innerText); // Duration
+            var rowText = row.innerText.toLowerCase();
+
+            
+            var show = true;
+            if (searchTerm && !rowText.includes(searchTerm)) show = false;
+            if (filterType && vehicleType !== filterType) show = false;
+
+            row.style.display = show ? '' : 'none';
+            row.setAttribute('data-price', price);
+            row.setAttribute('data-enddate', endDate + ' ' + endTime);
+            row.setAttribute('data-duration', duration);
+        });
+
+        // Sorting
+        var visibleRows = rows.filter(row => row.style.display !== 'none');
+
+        // Sort by price
+        if (sortPrice) {
+            visibleRows.sort(function(a, b) {
+                var priceA = parseFloat(a.getAttribute('data-price'));
+                var priceB = parseFloat(b.getAttribute('data-price'));
+                return sortPrice === 'expensive' ? priceB - priceA : priceA - priceB;
+            });
+        }
+
+        // Sort by end date/time
+        if (sortDate) {
+            visibleRows.sort(function(a, b) {
+                var dateA = new Date(a.getAttribute('data-enddate'));
+                var dateB = new Date(b.getAttribute('data-enddate'));
+                return sortDate === 'newest' ? dateB - dateA : dateA - dateB;
+            });
+        }
+
+        // Sort by duration
+        if (sortDuration) {
+            visibleRows.sort(function(a, b) {
+                var durA = parseInt(a.getAttribute('data-duration'));
+                var durB = parseInt(b.getAttribute('data-duration'));
+                return sortDuration === 'longest' ? durB - durA : durA - durB;
+            });
+        }
+
+        // Re-append sorted rows
+        var tbody = table.getElementsByTagName('tbody')[0];
+        visibleRows.forEach(row => tbody.appendChild(row));
+    }
+    
+
+    </script>
+
+    <script>
+        // Withdraw table search and filter functionality
+        if (document.getElementById('withdrawSearchInput')) {
+            document.getElementById('withdrawSearchInput').addEventListener('keyup', filterWithdrawTable);
+            document.getElementById('withdrawSortAmount').addEventListener('change', filterWithdrawTable);
+            document.getElementById('withdrawFilterStatus').addEventListener('change', filterWithdrawTable);
+        }
+
+        function filterWithdrawTable() {
+            var table = document.getElementById('withdrawTable');
+            if (!table) return;
+            var searchTerm = document.getElementById('withdrawSearchInput').value.toLowerCase();
+            var sortAmount = document.getElementById('withdrawSortAmount').value;
+            var filterStatus = document.getElementById('withdrawFilterStatus').value.toLowerCase();
+            var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // skip header
+
+            // Filter rows
+            rows.forEach(function(row) {
+                var cells = row.getElementsByTagName('td');
+                var amount = parseFloat(cells[0].innerText.replace(/[^0-9.]/g, '')) || 0;
+                var status = cells[1].innerText.trim().toLowerCase();
+                var rowText = row.innerText.toLowerCase();
+
+                var show = true;
+                if (searchTerm && !rowText.includes(searchTerm)) show = false;
+                if (filterStatus && status !== filterStatus) show = false;
+
+                row.style.display = show ? '' : 'none';
+                row.setAttribute('data-amount', amount);
+            });
+
+            // Sorting
+            var visibleRows = rows.filter(row => row.style.display !== 'none');
+
+            if (sortAmount) {
+                visibleRows.sort(function(a, b) {
+                    var amountA = parseFloat(a.getAttribute('data-amount'));
+                    var amountB = parseFloat(b.getAttribute('data-amount'));
+                    return sortAmount === 'highest' ? amountB - amountA : amountA - amountB;
+                });
+                var tbody = table.getElementsByTagName('tbody')[0];
+                visibleRows.forEach(row => tbody.appendChild(row));
+            }
+        }
+    </script>
+
+    <script>
+    function showModalImage(src) {
+        document.getElementById('imgModal').style.display = 'block';
+        document.getElementById('modalImg').src = src;
+    }
+    function closeModalImage() {
+        document.getElementById('imgModal').style.display = 'none';
+    }
+
+    // Attach click event to all vehicle images
+    document.querySelectorAll('img[alt="Vehicle Image"]').forEach(function(img) {
+        img.style.cursor = 'pointer';
+        img.onclick = function() {
+            showModalImage(this.src);
+        };
+    });
+    </script>
+</body>
+</html>

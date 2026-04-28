@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payment Error</title>
+</head>
+<body>
+    <h1>Payment Error</h1>
+     <input type="hidden" th:value="${userID}" id="userID">
+    <p>An error occurred while processing your payment. Please try again later.</p>
+    <a href="/rentalPaymentType" class="btn btn-primary">Back to Payment</a>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userType.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select User Type</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/selectionType.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body>
+    <div class="height-100">
+        <br><br><br><br>
+        <h1>REGISTER USER TYPE</h1>
+        <div class="user-type-buttons">
+            <div class="outer-button">
+                <form action="#" th:action="@{/userType}" method="post">
+                    <input type="hidden" name="userType" value="renter">
+                    <button type="submit" class="btn btn-primary">RENTER</button>
+                </form>
+            </div>
+            <div class="outer-button">
+                <form action="#" th:action="@{/userType}" method="post">
+                    <input type="hidden" name="userType" value="vehicleOwner">
+                    <button type="submit" class="btn btn-primary">VEHICLE OWNER</button>
+                </form>
+            </div>
+            <div class="outer-button">
+                <form action="#" th:action="@{/userType}" method="post">
+                    <input type="hidden" name="userType" value="admin">
+                    <button type="submit" class="btn btn-primary">ADMIN</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

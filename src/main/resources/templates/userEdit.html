@@ -1,0 +1,45 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userEdit.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="/css/userEdit.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarRV :: navbar(${user.userID})"></div>
+    <div class="right-panel">
+        <div class="form-card">
+            <h1>EDIT PROFILE</h1>
+            <form th:action="@{/userEdit}" method="post">
+                <input type="hidden" name="userID" th:value="${user.userID}">
+                <div class="form-group">
+                    <label for="userName">Name</label>
+                    <input type="text" id="userName" name="userName" th:value="${user.userName}" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" name="userEmail" th:value="${user.userEmail}" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword" name="userPassword" th:value="${user.userPassword}" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPhoneNumber">Phone Number</label>
+                    <input type="text" id="userPhoneNumber" name="userPhoneNumber" th:value="${user.userPhoneNumber}" required>
+                </div>
+                <div class="btn-container">
+                    <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/userProfile?userID=' + ${user.userID} + '\''">CANCEL</button>
+                    <button type="submit" class="btn btn-primary">EDIT</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payment Failed</title>
+</head>
+<body>
+    <input type="hidden" th:value="${userID}" id="userID">
+    <h1>Payment Failed</h1>
+    <p>Unfortunately, your payment could not be processed.</p>
+    <p>Status: <span th:text="${billStatus}"></span></p>
+</body>
+</html>

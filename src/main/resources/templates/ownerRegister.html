@@ -1,0 +1,83 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/ownerRegister.html -->
+<head>
+    <title>Register Owner</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/userRegister.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+        <div class="container-fluid">
+            <!-- Left Panel -->
+            <div class="left-panel" style="background-color: #f3e3d3;"></div>
+            
+           <!-- Center Panel -->
+            <div class="center-panel">
+                <h1>REGISTER OWNER</h1>
+                <div th:if="${error}" class="alert alert-danger" th:text="${error}" ></div>
+                <form action="#" th:action="@{/ownerRegister}" method="post" th:object="${owner}" enctype="multipart/form-data"> <!-- Add th:object attribute -->
+                    <input type="hidden" name="userID" th:value="${userID}">
+                    <div class="form-group">
+                        <label for="ownerName">NAME</label>
+                        <input type="text" class="form-control" id="ownerName" name="ownerName" th:field="*{ownerName}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerEmail">EMAIL</label>
+                        <input type="email" class="form-control" id="ownerEmail" name="ownerEmail" th:field="*{ownerEmail}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ownerPhoneNumber">PHONE NUMBER</label>
+                        <input type="text" class="form-control" id="ownerPhoneNumber" name="ownerPhoneNumber" th:field="*{ownerPhoneNumber}"  required pattern="\d{10}" maxlength="10" minlength="10" title="Phone number must be exactly 10 digits">
+                    </div>
+                    <div class="form-group">
+                        <label for="accountNumber">ACCOUNT NUMBER</label>
+                        <input type="text" class="form-control" id="accountNumber" name="accountNumber" th:field="*{accountNumber}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bankName">BANK NAME</label>
+                        <select class="form-control" id="bankName" name="bankName" th:field="*{bankName}" required>
+                            <option value="" disabled selected>Select your bank</option>
+                            <option value="Maybank2U">Maybank2U</option>
+                            <option value="CIMB Clicks">CIMB Clicks</option>
+                            <option value="Bank Islam">Bank Islam</option>
+                            <option value="Bank Rakyat">Bank Rakyat</option>
+                            <option value="AmBank">AmBank</option>
+                            <option value="RHB Bank">RHB Bank</option>
+                            <option value="Affin Bank">Affin Bank</option>
+                            <option value="Alliance Bank">Alliance Bank</option>
+                            <option value="Bank Muamalat">Bank Muamalat</option>
+                            <option value="BSN">BSN</option>
+                            <option value="Hong Leong Bank">Hong Leong Bank</option>
+                            <option value="HSBC">HSBC</option>
+                            <option value="KFH">KFH</option>
+                            <option value="OCBC Bank">OCBC Bank</option>
+                            <option value="Public Bank">Public Bank</option>
+                            <option value="Standard Chartered">Standard Chartered</option>
+                            <option value="UOB Bank">UOB Bank</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ownerDL">DRIVER LICENSE CARD</label>
+                        <input type="file" class="form-control" id="ownerDL" name="ownerDL" th:field="*{ownerDL}" required>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/ownerType?userID=' + ${userID} + '\''">CANCEL</button>
+                        <button type="submit" class="btn btn-primary">REGISTER</button>
+                    </div>
+                </form>
+            </div>
+        <!-- Right Panel -->
+            <div class="right-panel">
+            </div>
+        </div>
+        
+    
+</body>
+</html>

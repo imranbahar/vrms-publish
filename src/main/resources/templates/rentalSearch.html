@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Available Vehicles</title>
+    <link rel="stylesheet" href="/css/rentalSearch.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <link rel="stylesheet" href="/css/try.css">
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoapify/geocoder-autocomplete@3.0.1/styles/minimal.css">
+
+    <style>
+        /* This forces the autocomplete dropdown to sit above the Leaflet map */
+        .autocomplete-container {
+            position: relative;
+            z-index: 9999 !important; 
+        }
+        
+        /* Ensure Leaflet map stays in the background */
+        #map {
+            z-index: 1 !important;
+        }
+    </style>
+    
+    <script src="/js/rentalSearch.js"></script>
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body id="body-pd">
+    <div th:replace="~{navbarRV :: navbar(${userID})}"></div>
+    <div class="right-panel">
+        <div class="rental-search-card">
+            <h1>SEARCH VEHICLES</h1>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label style="font-weight:600;">SEARCH LOCATION</label>
+
+<div id="autocomplete" class="autocomplete-container" style="max-width:350px;"></div>
+
+<input type="hidden" id="searchLocation" name="searchLocation" />
+<input type="hidden" id="searchLocationAddress" name="searchLocationAddress" />
+
+<div id="map" style="height:220px;width:100%;max-width:500px;margin:15px auto 0 auto;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,0.08);"></div>
+            </div>
+            
+            <form th:action="@{/rentalSearch}" method="post" class="rental-search-form" id="rentalSearchForm">
+                <input type="hidden" name="userID" th:value="${userID}">
+                
+                <input type="hidden" id="searchLocation" name="searchLocation" />
+                <input type="hidden" id="searchLocationAddress" name="searchLocationAddress" />
+                <div class="rental-search-row">
+                    <div class="rental-search-col">
+                        <div class="form-group">
+                            <label for="vehicleType">VEHICLE TYPE</label>
+                            <select class="form-control" id="vehicleType" name="vehicleType" required>
+                                <option value="" disabled selected>Select Vehicle Type</option>
+                                <option value="motorcycle">Motorcycle</option>
+                                <option value="car">Car</option>
+                                <option value="van">Van</option>
+                                <option value="bus">Bus</option>
+                                <option value="lorry">Lorry</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Rental Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Rental Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                        <button type="reset" class="btn btn-secondary rental-search-btn">CANCEL</button>
+                    </div>
+                    <div class="rental-search-col">
+                        <div class="form-group">
+                            <label for="startTime">Start Rental Time</label>
+                            <input type="time" class="form-control" id="startTime" name="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">End Rental Time</label>
+                            <input type="time" class="form-control" id="endTime" name="endTime" required>
+                        </div>
+                        <div class="form-group">
+                            <br><br><br>
+                        </div>
+                        <button type="submit" class="btn btn-primary rental-search-btn">SEARCH</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@geoapify/geocoder-autocomplete@3.0.1/dist/index.min.js"></script>
+    
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let map, marker, locationSet = false;
+        
+        // PASTE YOUR NEW GEOAPIFY KEY HERE. 
+        // Remember to secure it in the Geoapify Dashboard using HTTP Referrers!
+        const geoapifyKey = "6d7897b5a1874546b7c8824a812926b8"; 
+
+        const ktgLat = 5.3294;
+        const ktgLon = 103.1370;
+
+        // Initialize Leaflet Map
+        map = L.map('map').setView([ktgLat, ktgLon], 13);
+
+        // Add Geoapify Map Tiles
+        L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=${geoapifyKey}`, {
+            attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Initialize Draggable Marker
+        marker = L.marker([ktgLat, ktgLon], { draggable: true }).addTo(map);
+
+        function reverseGeocode(lat, lon) {
+        fetch(`https://api.geoapify.com/v1/geocode/reverse?lat=${lat}&lon=${lon}&apiKey=${geoapifyKey}`)
+            .then(response => response.json())
+            .then(result => {
+                if (result.features.length > 0) {
+                    const address = result.features[0].properties.formatted;
+                    document.getElementById('searchLocationAddress').value = address;
+                    // Optional: Show the address in the search box so user sees it
+                    geocoder.setValue(address); 
+                }
+            });
+    }
+
+        document.getElementById('searchLocation').value = "";
+
+        // Function to update hidden inputs
+        function updateLocation(lat, lon, address = null) {
+        document.getElementById('searchLocation').value = lat.toFixed(6) + ',' + lon.toFixed(6);
+        locationSet = true;
+        
+        if (address) {
+            document.getElementById('searchLocationAddress').value = address;
+        } else {
+            // If no address provided (like from a map click), fetch it
+            reverseGeocode(lat, lon);
+        }
+    }
+
+        // Handle Marker Drag
+        marker.on('dragend', function (e) {
+            const pos = marker.getLatLng();
+            updateLocation(pos.lat, pos.lng);
+        });
+
+        // Handle Map Click
+        map.on('click', function (e) {
+            marker.setLatLng(e.latlng);
+            updateLocation(e.latlng.lat, e.latlng.lng);
+        });
+
+        // Initialize Geoapify Autocomplete
+        const geocoder = new autocomplete.GeocoderAutocomplete(
+            document.getElementById("autocomplete"), 
+            geoapifyKey, 
+            {
+                placeholder: "Search location in Kuala Terengganu"
+            }
+        );
+
+        // Restrict search to Malaysia
+        geocoder.addFilterByCountrycode(['my']);
+
+        // Handle place selection from Autocomplete
+        geocoder.on('select', (location) => {
+            if (!location) return; // If user clears the input
+
+            const lat = location.properties.lat;
+            const lon = location.properties.lon;
+            const address = location.properties.formatted;
+
+            // Update hidden inputs
+            updateLocation(lat, lon);
+            document.getElementById('searchLocationAddress').value = address;
+
+            // Move Map and Marker
+            map.setView([lat, lon], 16);
+            marker.setLatLng([lat, lon]);
+        });
+
+        // SweetAlert Validation Check on Form Submit
+        document.getElementById('rentalSearchForm').addEventListener('submit', function(e) {
+            const loc = document.getElementById('searchLocation').value;
+            if (!loc || !locationSet) {
+                e.preventDefault();
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Location Required',
+                    text: 'Please search or select a location on the map before searching for vehicles.'
+                });
+            }
+        });
+    });
+    </script>
+</body>
+</html>

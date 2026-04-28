@@ -1,0 +1,58 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userProfile.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>User Profile</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/userProfile.css">    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var passwordElement = document.getElementById("userPassword");
+            passwordElement.value = "****";
+        });
+    </script>
+</head>
+<body id="body-pd">
+    <div th:replace="navbarA :: navbar(${user.userID})"></div>
+
+    <div class="height-100">
+        <div class="main-content d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+           <div class="card">
+                <div class="card-content">
+                    <a class="card-photo" th:href="@{/adminEditPic(userID=${user.userID})}" title="Edit Picture">
+                        <img th:src="@{/userPic(userID=${user.userID})}" alt="Profile Picture"
+                            style="width:100%;height:100%;object-fit:cover;border-radius:50%;cursor:pointer;">
+                    </a>
+                    <div class="card-divider"></div>
+                    <div class="card-info">
+                        <div class="card-title" th:text="${user.userName}">
+                            User Name
+                            <br>
+                            <span th:text="${user.userEmail}">user@email.com</span>
+                        </div>
+                        <div class="card-contacts">
+                            <div class="card-contact">
+                                <i class="fas fa-envelope"></i>
+                                <span th:text="${user.userEmail}">user@email.com</span>
+                            </div>
+                            <div class="card-contact">
+                                <i class="fas fa-phone"></i>
+                                <span th:text="${user.userPhoneNumber}">0123456789</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button class="button edit-animate"
+                    type="button"
+                    th:onclick="'window.location.href=\'/adminEdit?userID=' + ${user.userID} + '\''">
+                    <i class="fas fa-edit"></i> Edit Profile
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>My Past Rentals</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/review.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+   
+    <div th:replace="navbarRV :: navbar(${userID})"></div>
+
+    <div class="container">
+        <h1>My Past Rentals</h1>
+        <form method="get" th:action="@{/renterRentalList}" class="form-inline mb-3">
+                <input type="hidden" name="userID" th:value="${userID}" />
+                <select name="sort" class="form-control mr-2">
+                    <option value="">Sort/Filter By</option>
+                    <option value="newest" th:selected="${sort == 'newest'}">Newest</option>
+                    <option value="oldest" th:selected="${sort == 'oldest'}">Oldest</option>
+                    <option value="expensive" th:selected="${sort == 'expensive'}">Expensive - Cheapest</option>
+                    <option value="cheapest" th:selected="${sort == 'cheapest'}">Cheapest - Expensive</option>
+                    <option value="giveReview" th:selected="${sort == 'giveReview'}">Give Review</option>
+                    <option value="reviewed" th:selected="${sort == 'reviewed'}">Reviewed</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </form>
+        <div style="overflow-x:auto;">
+            
+            <table class="table table-striped">
+            <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Vehicle Picture</th>
+                        <!-- <th>Bill Code</th> -->
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th>Total Price</th>
+                        <th>Payment Type</th>
+                        <th>Location</th>
+                        <th>Review</th> 
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rental : ${pastRentals}">
+                        <td th:text="${rental.vehicle.vehiclePlateNumber}">Vehicle Plate Number</td>
+                        <td>
+                            <img th:src="'data:image/jpeg;base64,' + ${rental.vehicle.vehiclePicString}"
+                                alt="Vehicle Image"
+                                style="width: 100px; height: 80px; cursor:pointer;"
+                                th:onclick="'showModalImage(this.src)'"/>
+                        </td>
+                        <!-- <td th:text="${rental.billCode}">Bill Code</td> -->
+                        <td th:text="${rental.startDate}">Start Date</td>
+                        <td th:text="${rental.endDate}">End Date</td>
+                        <td th:text="${rental.startTime}">Start Time</td>
+                        <td th:text="${rental.endTime}">End Time</td>
+                        <td th:text="${rental.duration}">Duration</td>
+                        <td th:text="${#numbers.formatDecimal(rental.totalPrice, 1, 'COMMA', 2, 'POINT')}">Total Price</td>
+                        <td th:text="${rental.paymentType}">Payment Type</td>
+                        <td th:text="${rental.vehicle.vehicleAddress}">Location</td>
+                        <td>
+                            <div th:if="${reviewMap[rental.rentalID] != null}">
+                                <b>Rating:</b>
+                                <span class="star-rating" th:utext="${'&#9733;'.repeat(reviewMap[rental.rentalID].rating)}"></span>
+                                <br>
+                                <b>Comment:</b> <span th:text="${reviewMap[rental.rentalID].comment}">!</span>
+                            </div>
+                            <div th:if="${reviewMap[rental.rentalID] == null}">
+                                <form th:action="@{/giveReview}" method="get" style="display:inline;">
+                                    <input type="hidden" name="rentalID" th:value="${rental.rentalID}" />
+                                    <input type="hidden" name="userID" th:value="${userID}" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Give Review</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+    </div>
+        <div id="imgModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.8);">
+        <span style="position:absolute;top:20px;right:35px;color:#fff;font-size:40px;font-weight:bold;cursor:pointer;" onclick="closeModalImage()">&times;</span>
+        <img id="modalImg" style="margin:auto;display:block;max-width:80%;max-height:80%;position:absolute;top:0;left:0;right:0;bottom:0;">
+    </div>
+    <script>
+    function showModalImage(src) {
+        document.getElementById('imgModal').style.display = 'block';
+        document.getElementById('modalImg').src = src;
+    }
+    function closeModalImage() {
+        document.getElementById('imgModal').style.display = 'none';
+    }
+    </script>
+</body>
+</html>

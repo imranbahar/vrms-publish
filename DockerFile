@@ -1,0 +1,12 @@
+# Use a lightweight OpenJDK 17 image
+FROM eclipse-temurin:17-jdk-alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy the built JAR file from your target folder to the container
+# Make sure the JAR name matches what Maven generates
+COPY target/*.jar app.jar
+
+# Define the command to start your application
+ENTRYPOINT ["java", "-jar", "app.jar"]

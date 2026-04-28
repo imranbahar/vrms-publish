@@ -1,0 +1,48 @@
+<!-- filepath: c:\PROJECT PITA\vsms\vsms\src\main\resources\templates\withdrawRequest.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Withdraw Request</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/withdrawRequest.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="container-fluid">
+        <!-- Left Panel -->
+        <div class="left-panel" style="background-color: #f3e3d3;"></div>
+        
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <h1>WITHDRAW REQUEST</h1>
+            <form th:action="@{/submitWithdrawRequest}" method="post">
+                <input type="hidden" name="userID" th:value="${userID}" />
+                <div class="form-group">
+                    <label>Total Available: RM <span th:text="${#numbers.formatDecimal(maxAmount, 1, 'COMMA', 2, 'POINT')}">0.00</span></label>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawAmount">AMOUNT TO WITHDRAW</label>
+                    <input type="number" class="form-control" id="withdrawAmount" name="withdrawAmount"
+                        min="1" th:attr="max=${maxAmount}" step="0.01" required>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/voRentalList?userID=' + ${userID} + '\''">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Proceed</button>
+                </div>
+            </form>
+        </div>
+        <!-- Right Panel -->
+        <div class="right-panel"></div>
+    </div>
+    <script th:if="${param.success}" th:inline="javascript">
+        /*<![CDATA[*/
+        alert('Request withdraw success');
+        window.location.href = /*[[@{/voRentalList(userID=${userID})}]]*/ '';
+        /*]]>*/
+    </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/navbarRV.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Navbar</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:fragment="navbar(userID)">
+        <header class="header" id="header">
+            <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
+        </header>
+        <div class="l-navbar" id="nav-bar">
+            <nav class="nav">
+                <div>
+                    <a th:href="@{/adminHome(userID=${userID})}" class="nav_logo"> 
+                        <img src="/images/logo.png" alt="VSMS LOGO" class="nav_logo-icon"> 
+                        <span class="nav_logo-name">VEHICLE RENTAL <br>MANAGEMENT SERVICE</span> 
+                    </a>
+                    <div class="nav_list"> 
+                        <a th:href="@{/adminHome(userID=${userID})}" class="nav_link"> 
+                            <i class="fas fa-home nav_icon"></i> 
+                            <span class="nav_name">Home</span> 
+                        </a> 
+                        <a th:href="@{/adminProfile(userID=${userID})}" class="nav_link"> 
+                            <i class="fa-solid fa-user nav_icon"></i> 
+                            <span class="nav_name">Profile</span> 
+                        </a> 
+                        <a th:href="@{/approvalType(userID=${userID})}" class="nav_link"> 
+                            <i class="fas fa-circle-check nav_icon"></i> 
+                            <span class="nav_name">Approval</span> 
+                        </a>  
+                        <a th:href="@{/reportType(userID=${userID})}" class="nav_link"> 
+                            <i class="fa-solid fa-file-invoice nav_icon"></i> 
+                            <span class="nav_name">Report</span> 
+                        </a>
+                        
+                        
+                    </div>
+                </div> 
+                <a href="userLogin" class="nav_link"> 
+                    <i class="fa-solid fa-right-from-bracket nav_icon"></i> 
+                    <span class="nav_name">Logout</span> 
+                </a>
+            </nav>
+        </div>
+    </div>
+</body>
+</html>

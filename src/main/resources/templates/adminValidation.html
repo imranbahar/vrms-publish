@@ -1,0 +1,38 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/adminValidation.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin Validation</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/account.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="left-panel">
+            <h1 class="centered-bold">ADMIN<br>VALIDATION</h1>
+            <form action="#" th:action="@{/adminValidation}" method="post">
+                <input type="hidden" name="userType" th:value="${userType}">
+                <div class="form-group" style="padding-top: 50%;">
+                    <label for="adminCode">ADMIN CODE</label>
+                    <input type="password" class="form-control" id="adminCode" name="adminCode" required>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/userType'">CANCEL</button>
+                    <button type="submit" class="btn btn-primary">VALIDATE</button>
+                </div>
+                <div th:if="${error}">
+                    <p class="text-danger" th:text="${error}"></p>
+                </div>
+            </form>
+        </div>
+        <div class="right-panel">
+            <h1>WELCOME TO</h1>
+            <h1>VEHICLE SHARING</h1>
+            <h1>MANAGEMENT</h1>
+            <h1>SERVICE SYSTEM</h1>
+            <p>Admin validation required to proceed</p>
+        </div>
+    </div>
+</body>
+</html>

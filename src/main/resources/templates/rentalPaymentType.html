@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Select Payment Type</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/selectionType.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:include="navbarRV :: navbar(${userID})"></div>
+
+    <div class="height-100">
+        <h1>SELECT PAYMENT METHOD</h1>
+        <div class="user-type-buttons">
+            <div class="outer-button">  
+                <form th:action="@{/processPayment}" method="post">
+                    <input type="hidden" name="paymentType" value="cash">
+                    <input type="hidden" name="userID" th:value="${userID}">
+                    <input type="hidden" name="rentalID" th:value="${rentalID}">
+                    <button type="submit" class="btn btn-primary">CASH</button>
+                </form>
+            </div>
+            <div class="outer-button">
+                <form th:action="@{/processPayment}" method="post">
+                    <input type="hidden" name="paymentType" value="onlineBank">
+                    <input type="hidden" name="userID" th:value="${userID}">
+                    <input type="hidden" name="rentalID" th:value="${rentalID}">
+                    <button type="submit" class="btn btn-primary">ONLINE BANKING</button>
+                </form>
+            </div> 
+        </div>
+    </div>
+</body>
+</html>

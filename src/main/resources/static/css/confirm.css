@@ -1,0 +1,253 @@
+/* Import a font (optional, choose one you like) */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+body {
+    /* background-color: #f4f4f4; /* Light gray background for the page */
+    font-family: 'Lato', sans-serif;
+    color: #333;
+    line-height: 1.6;
+    /* Reset margin added by Bootstrap if needed */
+    margin: 0;
+    /* Add padding if navbar is fixed */
+    /* padding-top: 80px; Adjust based on your navbar height */
+}
+
+.confirmation-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align card to top */
+    padding: 40px 20px; /* Padding around the card */
+    min-height: calc(100vh - 80px); /* Adjust 80px based on navbar height */
+}
+
+.confirmation-card {
+    background-color: #ffffff; /* White card background */
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    max-width: 900px; /* Max width of the card */
+    width: 100%;
+    overflow: hidden; /* Ensures image stays within rounded corners */
+}
+
+.details-column {
+    flex: 3; /* Takes more space */
+    padding: 30px 35px;
+    display: flex;
+    flex-direction: column;
+}
+
+.image-column {
+    flex: 2; /* Takes less space */
+    background-color: #e0e0e0; /* Placeholder bg if image fails */
+}
+
+.image-column img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover the area, might crop */
+    display: block;
+}
+
+.pre-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #777;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.main-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 5px;
+    line-height: 1.3;
+}
+
+.sub-title {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 15px;
+}
+
+.info-note {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 25px;
+    border-left: 3px solid #eee;
+    padding-left: 10px;
+}
+
+
+.info-grid {
+    display: flex;
+    gap: 30px; /* Space between columns */
+    margin-bottom: 30px;
+    flex-grow: 1; /* Allows this section to push footer down */
+}
+
+.info-section {
+    flex: 1; /* Each section takes equal space */
+}
+
+.section-label {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 10px;
+}
+
+.info-section p {
+    font-size: 0.9rem;
+    color: #444;
+    margin-bottom: 8px;
+}
+
+.info-section p.total-price {
+    font-weight: 700;
+    color: #333;
+    font-size: 1rem; /* Make total price slightly larger */
+    margin-top: 10px;
+}
+
+
+.info-link {
+    font-size: 0.9rem;
+    color: #007bff; /* Standard link blue, change as needed */
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.info-link:hover {
+    text-decoration: underline;
+}
+
+
+.actions-footer {
+    margin-top: auto; /* Push footer to bottom */
+    padding-top: 20px; /* Space above footer */
+    border-top: 1px solid #eee; /* Separator line */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.social-icons {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icons a {
+    color: #aaa;
+    font-size: 1.1rem;
+    transition: color 0.2s ease;
+}
+
+.social-icons a:hover {
+    color: #555;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    align-items: center;
+}
+
+/* Make forms display inline */
+.action-buttons form {
+    display: inline-block;
+    margin: 0;
+}
+
+
+.btn-confirm {
+    background-color: #f56519; /* Orange color from example */
+    color: #ffffff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px; /* Rounded corners */
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none; /* In case it's an <a> styled as button */
+    transition: background-color 0.2s ease;
+}
+
+.btn-confirm:hover {
+    background-color: #e05a16; /* Darker orange */
+}
+
+.btn-cancel {
+    background-color: #e9ecef; /* Light gray background */
+    color: #495057; /* Dark gray text */
+    border: 1px solid #ced4da; /* Subtle border */
+    padding: 8px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-cancel:hover {
+    background-color: #dee2e6;
+    border-color: #adb5bd;
+}
+
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .confirmation-card {
+        flex-direction: column; /* Stack columns */
+    }
+
+    /* Make image appear first when stacked */
+    .image-column {
+        order: 1; /* Image first */
+        height: 250px; /* Fixed height for image on mobile */
+        flex: none; /* Reset flex property */
+    }
+
+    .details-column {
+        order: 2; /* Details second */
+        padding: 25px; /* Reduce padding */
+    }
+
+    .info-grid {
+        flex-direction: column; /* Stack info sections */
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .actions-footer {
+        flex-direction: column;
+        align-items: stretch; /* Stretch items full width */
+        gap: 15px;
+    }
+
+    .action-buttons {
+        flex-direction: column-reverse; /* Put confirm button on top */
+        width: 100%;
+    }
+    .action-buttons form {
+        width: 100%;
+    }
+
+     .action-buttons button {
+        width: 100%; /* Make buttons full width */
+        text-align: center;
+        padding: 12px 20px; /* Adjust padding */
+     }
+
+    .social-icons {
+       justify-content: center; /* Center social icons */
+       margin-bottom: 10px;
+    }
+}

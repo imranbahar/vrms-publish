@@ -1,0 +1,103 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userRegister.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Account</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/account.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <h1>REGISTER ACCOUNT</h1>
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <form id="registrationForm" action="#" th:action="@{/userRegister}" method="post">
+                <input type="hidden" name="userType" th:value="${userType}">
+                <div class="form-group">
+                    <label for="userName">USERNAME</label>
+                    <input type="text" class="form-control" id="userName" name="userName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">EMAIL</label>
+                    <input type="email" class="form-control" id="userEmail" name="userEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPhoneNumber">PHONE NUMBER</label>
+                    <input type="text" class="form-control" id="userPhoneNumber" name="userPhoneNumber" required pattern="\d{10}" maxlength="10" minlength="10" title="Phone number must be exactly 10 digits">
+                </div>
+
+                
+                <div class="form-group">
+                    <label for="userPassword">PASSWORD</label>
+                    <input type="password" class="form-control" id="userPassword" name="userPassword" required>
+                    <small id="passwordHelp" style="color: white; display: none;">
+                            Password must: <br>
+                            At least 8 characters long<br> 
+                            Include an UPPERCASE letter<br> 
+                            Include a lowercase letter<br> 
+                            Include a number
+                    </small>
+                </div>
+
+
+                
+                <!-- x siap lagi ni confirm password-->
+                <div class="form-group">
+                    <label for="userConfirmPassword">CONFIRM PASSWORD</label>
+                    <input type="password"  class="form-control" id="userConfirmPassword" name="userConfirmPassword" required>
+                    <small id="confirmHelp" style="color: white; display: none;">
+                        Passwords do not match.
+                    </small>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='/logout'">CANCEL</button>
+                    <button type="submit" class="btn btn-primary">REGISTER</button>
+                </div>
+            </form>
+        </div>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h1>WELCOME TO</h1>
+            <h1>VEHICLE RENTAL</h1>
+            <h1>MANAGEMENT</h1>
+            <h1>SERVICE SYSTEM</h1>
+            <p>Rent your desire vehicle to rent</p>
+        </div>
+
+        <script>
+            const password = document.getElementById('userPassword');
+            const confirmPassword = document.getElementById('userConfirmPassword');
+            const passwordHelp = document.getElementById('passwordHelp');
+            const confirmHelp = document.getElementById('confirmHelp');
+            const form = document.getElementById('registrationForm');
+
+            password.addEventListener('input', () => {
+                const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+                if (!regex.test(password.value)) {
+                passwordHelp.style.display = 'block';
+                } else {
+                passwordHelp.style.display = 'none';
+                }
+            });
+
+            confirmPassword.addEventListener('input', () => {
+                if (password.value !== confirmPassword.value) {
+                confirmHelp.style.display = 'block';
+                } else {
+                confirmHelp.style.display = 'none';
+                }
+            });
+
+            form.addEventListener('submit', (e) => {
+                if (password.value !== confirmPassword.value) {
+                e.preventDefault();
+                alert('Passwords do not match!');
+                }
+            });
+            </script>
+    </div>
+</body>
+</html>

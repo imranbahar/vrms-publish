@@ -1,0 +1,70 @@
+<!-- filepath: c:\PROJECT PITA\vsms\vsms\src\main\resources\templates\rentalSearch.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Search Available Vehicles</title>
+    <link rel="stylesheet" href="/css/rentalSearch.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/rentalSearch.js"></script>
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="right-panel">
+        <div class="rental-search-card">
+            <h1>SEARCH VEHICLES</h1>
+            <form th:action="@{/bookSearch}" method="post" class="rental-search-form">
+                <input type="hidden" name="userID" th:value="${userID}">
+                <div class="rental-search-row">
+                    <div class="rental-search-col">
+                        <!-- ...left column inputs... -->
+                        <div class="form-group">
+                            <label for="vehicleType">Vehicle Type</label>
+                            <select class="form-control" id="vehicleType" name="vehicleType" required>
+                                <option value="" disabled selected>Select Vehicle Type</option>
+                                <option value="motorcycle">Motorcycle</option>
+                                <option value="car">Car</option>
+                                <option value="van">Van</option>
+                                <option value="bus">Bus</option>
+                                <option value="lorry">Lorry</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Start Use Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Use Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                        <!-- Button in left column -->
+                        <button type="reset" class="btn btn-secondary rental-search-btn">CANCEL</button>
+                    </div>
+                    <div class="rental-search-col">
+                        <!-- ...right column inputs... -->
+                        <div class="form-group">
+                            <label for="startTime">Start Use Time</label>
+                            <input type="time" class="form-control" id="startTime" name="startTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">End Use Time</label>
+                            <input type="time" class="form-control" id="endTime" name="endTime" required>
+                        </div>
+                        <div class="form-group">
+                            <br><br><br>
+                        </div>
+                        <!-- Button in right column -->
+                        <button type="submit" class="btn btn-primary rental-search-btn">SEARCH</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

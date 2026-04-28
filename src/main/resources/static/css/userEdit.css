@@ -1,0 +1,96 @@
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #e3ded0; /* Beige */
+}
+
+/* Left Panel */
+.left-panel {
+    background-color: #e74c3c; /* Red */
+    flex: 0.2; /* 20% width */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 10px;
+}
+.left-panel h1 {
+    color: white;
+    font-weight: bold;
+    margin-bottom: 50px;
+}
+.icon-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+.icon-menu i {
+    font-size: 24px;
+    color: white;
+}
+.icon-menu span {
+    color: white;
+    font-size: 12px;
+    text-align: center;
+}
+/* Right Panel */
+.right-panel {
+  
+    flex: 0.8; /* 80% width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+/* Form Card */
+.form-card {
+    background-color: #e74c3c; /* Red */
+    padding: 30px;
+    border-radius: 10px;
+    color: white;
+    width: 400px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+.form-card h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.form-card .form-group {
+    margin-bottom: 15px;
+}
+.form-card label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+.form-card input {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+}
+.form-card .btn-container {
+    display: flex;
+    justify-content: space-between;
+}
+.btn-container button {
+    width: 48%;
+    padding: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.btn-cancel {
+    background-color: white;
+    color: #e74c3c;
+}
+.btn-edit {
+    background-color: #e74c3c;
+    color: white;
+}
+.btn-cancel:hover, .btn-edit:hover {
+    opacity: 0.8;
+}

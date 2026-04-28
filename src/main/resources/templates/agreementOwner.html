@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Owner Agreement</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/selectionType.css">
+    <link rel="stylesheet" href="/css/agreement.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/js/try.js"></script>
+</head>
+<body id="body-pd" style="background: #f3e3d3;">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="height-100 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+        <div class="brutalist-card">
+            <div class="brutalist-card__header">
+                <div class="brutalist-card__icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                        ></path>
+                    </svg>
+                </div>
+                <div class="brutalist-card__alert">Owner Agreement</div>
+            </div>
+            <div class="brutalist-card__message">
+                Please read and agree to the terms and conditions before proceeding.<br>
+                <small>1. You must agree the vehicle you register must be owned by you.</small><br>
+                <small>2. Our company will not be responsible if vehicle has summon when be used by renter.</small><br>
+                <small>3. Any damage to vehicle will be your responsibility but can used the system to get information of the renter that caused it.</small><br>
+                <small>4. You must ensure the vehicle is in good condition before renting it out.</small><br>
+                <small>5. You must provide accurate information about the vehicle.</small><br>
+                <small>6. You must ensure that the vehicle is insured and roadworthy.</small><br>
+                <small>7. You must comply with all local laws and regulations regarding vehicle rental.</small><br>
+                <small>8. Your private information such as contact details and vehicle registration will be kept confidential.</small><br>
+            </div>
+            <div class="brutalist-card__actions">
+                <button type="button" class="brutalist-card__button brutalist-card__button--read" id="agreeBtn"
+                    th:data-userid="${userID}">
+                    I Agree
+                </button>
+                <button type="button" class="brutalist-card__button brutalist-card__button--mark"
+                    id="disagreeBtn"
+                    th:data-userid="${userID}">
+                    I Disagree
+                </button>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('agreeBtn').addEventListener('click', function() {
+        const userID = this.getAttribute('data-userid');
+        window.location.href = '/ownerType?userID=' + userID;
+    });
+    document.getElementById('disagreeBtn').addEventListener('click', function() {
+        const userID = this.getAttribute('data-userid');
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you have read the agreement? You will be returned to the previous page.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, go back"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/chooseOwner?userID=' + userID;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

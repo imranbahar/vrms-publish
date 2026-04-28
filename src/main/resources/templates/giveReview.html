@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Give Review</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/review.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <style>
+      .rating-card .text-primary { font-size: 2rem; }
+      .rating-card .text-secondary { font-size: 1.2rem; }
+      .rating-card label { font-size: 1.2rem; }
+      .rating-card .form-control { color: #000 !important; font-size: 1.2rem; }
+      .rating-card textarea.form-control { min-height: 80px; }
+      .rating-card button { font-size: 1.2rem; }
+    </style>
+</head>
+<body id="body-pd">
+    <div th:replace="navbarRV :: navbar(${userID})"></div>
+    <div class="container d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+        <div class="rating-card">
+            <div class="text-wrapper">
+                <p class="text-primary">Please Rate Your Experience</p>
+                <p class="text-secondary">to help us serve you better</p>
+            </div>
+            <form th:action="@{/submitReview}" method="post" style="width:100%;">
+                <input type="hidden" name="rentalID" th:value="${rentalID}" />
+                <input type="hidden" name="userID" th:value="${userID}" />
+                <div class="rating-stars-container">
+                    <input value="5" name="rating" id="star5" type="radio" required>
+                    <label for="star5" class="star-label">
+                        <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>
+                    </label>
+                    <input value="4" name="rating" id="star4" type="radio">
+                    <label for="star4" class="star-label">
+                        <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>
+                    </label>
+                    <input value="3" name="rating" id="star3" type="radio">
+                    <label for="star3" class="star-label">
+                        <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>
+                    </label>
+                    <input value="2" name="rating" id="star2" type="radio">
+                    <label for="star2" class="star-label">
+                        <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>
+                    </label>
+                    <input value="1" name="rating" id="star1" type="radio">
+                    <label for="star1" class="star-label">
+                        <svg viewBox="0 0 24 24"><path d="M12,17.27L18.18,21L16.54,13.97L22,9.24L14.81,8.62L12,2L9.19,8.62L2,9.24L7.45,13.97L5.82,21L12,17.27Z"></path></svg>
+                    </label>
+                </div>
+                <div class="form-group mt-3" style="width:100%;">
+                    <label for="comment" class="text-primary" style="color:white;">Comment:</label>
+                    <textarea class="form-control" id="comment" name="comment" required maxlength="30" style="resize:none;"></textarea>
+                </div>
+                <button type="submit" class="btn btn-success mt-3" style="width:100%;">Submit Review</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

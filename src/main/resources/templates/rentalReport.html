@@ -1,0 +1,224 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/rentalReport.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rental Report</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <style>
+        .highlight { background-color: yellow; }
+        .modal { display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.8);}
+        .modal-content { margin:auto;display:block;max-width:80%;max-height:80%;position:absolute;top:0;left:0;right:0;bottom:0;}
+        .modal-close { position:absolute;top:20px;right:35px;color:#fff;font-size:40px;font-weight:bold;cursor:pointer;}
+    </style>
+</head>
+<body id="body-pd">
+    <div th:replace="navbarA :: navbar(${userID})"></div>
+    <div class="container">
+        <h1>Rental Report</h1>
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <select id="sortPlate" class="form-control">
+                    <option value="">Sort Plate</option>
+                    <option value="az">A - Z</option>
+                    <option value="za">Z - A</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filterType" class="form-control">
+                    <option value="">All Types</option>
+                    <option value="motorcycle">Motorcycle</option>
+                    <option value="car">Car</option>
+                    <option value="van">Van</option>
+                    <option value="bus">Bus</option>
+                    <option value="lorry">Lorry</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="sortPrice" class="form-control">
+                    <option value="">Sort by Price</option>
+                    <option value="expensive">Expensive - Cheapest</option>
+                    <option value="cheapest">Cheapest - Expensive</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="sortDuration" class="form-control">
+                    <option value="">Sort by Duration</option>
+                    <option value="longest">Longest - Shortest</option>
+                    <option value="shortest">Shortest - Longest</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filterPayment" class="form-control">
+                    <option value="">All Payment Types</option>
+                    <option value="owner use">Owner Use</option>
+                    <option value="cash">Cash</option>
+                    <option value="online bank">Online Bank</option>
+                </select>
+            </div>
+        </div>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for rentals..">
+        
+        <div style="overflow-x:auto;">
+            <table class="table table-striped" id="rentalTable">
+                <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Vehicle Picture</th>
+                        <th>Renter Name</th>
+                        <th>Total Price</th>
+                        <th>Payment Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Duration</th>
+                        <th>Bill Code</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="rental : ${rentals}" th:attr="data-vehicletype=${rental.vehicle.vehicleType}">
+                        <td th:text="${rental.vehicle.vehiclePlateNumber}"></td>
+                        <td>
+                            <img th:src="'data:image/jpeg;base64,' + ${rental.vehicle.vehiclePicString}" alt="Vehicle Image"
+                                style="width: 100px; height: 80px; cursor:pointer;"
+                                th:onclick="'showModalImage(this.src)'" />
+                        </td>
+                        <td th:text="${rental.user.userName}"></td>
+                        <td th:text="${#numbers.formatDecimal(rental.totalPrice, 0, 2)}"></td>
+                        <td th:text="${rental.paymentType}"></td>
+                        <td th:text="${rental.startDate}"></td>
+                        <td th:text="${rental.endDate}"></td>
+                        <td th:text="${rental.startTime}"></td>
+                        <td th:text="${rental.endTime}"></td>
+                        <td th:text="${rental.duration}"></td>
+                        <td th:text="${rental.billCode}"></td>
+                        <td th:text="${rental.vehicle.vehicleAddress}">Location</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'/reportType?userID=' + ${userID} + '\''">Back to Report Type</button>
+    </div>
+    <!-- Image Modal (same as vehicleReport) -->
+    <div id="imgModal" class="modal">
+        <span class="modal-close" onclick="closeModalImage()">&times;</span>
+        <img id="modalImg" class="modal-content">
+    </div>
+    <script>
+        function showModalImage(src) {
+            document.getElementById('imgModal').style.display = 'block';
+            document.getElementById('modalImg').src = src;
+        }
+        function closeModalImage() {
+            document.getElementById('imgModal').style.display = 'none';
+        }
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+        var searchTerm = this.value.toLowerCase();
+        var table = document.getElementById('rentalTable');
+        var rows = table.getElementsByTagName('tr');
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');
+            var found = false;
+            for (var j = 0; j < cells.length; j++) {
+                // Only highlight if cell does not contain an image
+                if (cells[j].querySelector('img')) continue;
+                var cellText = cells[j].innerText.toLowerCase();
+                if (cellText.includes(searchTerm)) {
+                    found = true;
+                    var regex = new RegExp(searchTerm, 'gi');
+                    cells[j].innerHTML = cells[j].innerText.replace(regex, function(match) {
+                        return '<span class="highlight">' + match + '</span>';
+                    });
+                } else {
+                    cells[j].innerHTML = cells[j].innerText;
+                }
+            }
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+    </script>
+
+    <script>
+    document.getElementById('sortPlate').addEventListener('change', filterRentalTable);
+    document.getElementById('filterType').addEventListener('change', filterRentalTable);
+    document.getElementById('sortPrice').addEventListener('change', filterRentalTable);
+    document.getElementById('sortDuration').addEventListener('change', filterRentalTable);
+    document.getElementById('filterPayment').addEventListener('change', filterRentalTable);
+
+    function parseDuration(durationStr) {
+        // Example: "1 days 2 hours" or "3 hours"
+        let days = 0, hours = 0;
+        if (!durationStr) return 0;
+        let dayMatch = durationStr.match(/(\d+)\s*day/);
+        let hourMatch = durationStr.match(/(\d+)\s*hour/);
+        if (dayMatch) days = parseInt(dayMatch[1]);
+        if (hourMatch) hours = parseInt(hourMatch[1]);
+        return days * 24 + hours;
+    }
+
+    function filterRentalTable() {
+        var sortPlate = document.getElementById('sortPlate').value;
+        var filterType = document.getElementById('filterType').value.toLowerCase();
+        var sortPrice = document.getElementById('sortPrice').value;
+        var sortDuration = document.getElementById('sortDuration').value;
+        var filterPayment = document.getElementById('filterPayment').value.toLowerCase();
+        var table = document.getElementById('rentalTable');
+        var tbody = table.getElementsByTagName('tbody')[0];
+        var rows = Array.from(tbody.getElementsByTagName('tr'));
+
+        // Filter by vehicle type and payment type
+        rows.forEach(function(row) {
+            var vehicleType = row.getAttribute('data-vehicletype') ? row.getAttribute('data-vehicletype').toLowerCase() : '';
+            var paymentType = row.getElementsByTagName('td')[4].innerText.toLowerCase();
+            var show = true;
+            if (filterType && vehicleType !== filterType) show = false;
+            if (filterPayment && paymentType !== filterPayment) show = false;
+            row.style.display = show ? '' : 'none';
+        });
+
+        // Only sort visible rows
+        var visibleRows = rows.filter(row => row.style.display !== 'none');
+
+        // Sort by plate number
+        if (sortPlate) {
+            visibleRows.sort(function(a, b) {
+                var plateA = a.getElementsByTagName('td')[0].innerText.toLowerCase();
+                var plateB = b.getElementsByTagName('td')[0].innerText.toLowerCase();
+                if (plateA < plateB) return sortPlate === 'az' ? -1 : 1;
+                if (plateA > plateB) return sortPlate === 'az' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Sort by price
+        if (sortPrice) {
+            visibleRows.sort(function(a, b) {
+                var priceA = parseFloat(a.getElementsByTagName('td')[3].innerText.replace(/[^0-9.]/g, '')) || 0;
+                var priceB = parseFloat(b.getElementsByTagName('td')[3].innerText.replace(/[^0-9.]/g, '')) || 0;
+                return sortPrice === 'expensive' ? priceB - priceA : priceA - priceB;
+            });
+        }
+
+        // Sort by duration
+        if (sortDuration) {
+            visibleRows.sort(function(a, b) {
+                var durA = parseDuration(a.getElementsByTagName('td')[9].innerText);
+                var durB = parseDuration(b.getElementsByTagName('td')[9].innerText);
+                return sortDuration === 'longest' ? durB - durA : durA - durB;
+            });
+        }
+
+        // Re-append sorted rows
+        visibleRows.forEach(row => tbody.appendChild(row));
+    }
+    </script>
+</body>
+</html>

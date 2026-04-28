@@ -1,0 +1,43 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userLogin.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body>
+    <div class="left-panel">
+        <h1>LOGIN</h1>
+        <form th:action="@{/userLogin}" method="post">
+            <div class="form-group">
+                <input type="text" id="userName" name="userName" placeholder="USERNAME" required>
+            </div>
+            <div class="form-group">
+                <input type="password" id="userPassword" name="userPassword" placeholder="PASSWORD" required>
+            </div>
+            <div class="form-group">
+                <select id="userType" name="userType" class="form-control" required>
+                    <option value="" disabled selected>Select User Type</option>
+                    <option value="renter">Renter</option>
+                    <option value="vehicleOwner">Vehicle Owner</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+        <div class="form-links">
+            <p><a th:href="@{/userType}">STILL NEW? REGISTER ACCOUNT</a></p>
+            <p><a th:href="@{/forgotPassword}">FORGOT PASSWORD? RESET PASSWORD</a></p>
+        </div>
+    </div>
+    <div class="right-panel">
+        <h2>WELCOME TO</h2>
+        <h2>VEHICLE RENTAL</h2>
+        <h2>MANAGEMENT</h2>
+        <h2>SERVICE SYSTEM</h2>
+        <p>Rent your desired vehicle to rent</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vehicle Sharing Management Service System</title>
+    <link rel="stylesheet" href="/css/homepage.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" >
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarA :: navbar(${user.userID})"></div>
+    <div class="dashboard-container">
+        <div class="row mb-4">
+            <div class="col-12 col-md-8">
+                <div class="rounded p-4" style="background:#d32f2f ;">
+                    <h2 class="mb-2" style="font-weight:700;">Welcome to <span style="color:#fff7f0 ;">VRMS</span>, <span th:text="${user.userName}">User</span></h2>
+                    <p style="color:#ffffff;">Ready to check all the report</p>
+                    <button class="btn btn-warning" style="font-weight:600;"
+                        th:onclick="'window.location.href=\'/reportType?userID=' + ${user.userID} + '\''">
+                        Get Started
+                    </button>
+                </div>
+            </div>
+            <div class="col-12 col-md-4 d-flex align-items-center justify-content-center ">
+                <div class="rounded p-4 text-center"
+                     style="background:#ffe5e5;color:#d32f2f;width:100%;height:100%;cursor:pointer;"
+                     th:onclick="'window.location.href=\'/userReport?userID=' + ${user.userID} + '\''">
+                    <div style="font-size:2.5rem;font-weight:700;">
+                        <span th:text="${userCount}">0</span>
+                    </div>
+                    <div style="font-size:1.1rem;">Total Users</div>
+                    <div style="font-size:0.95rem;color:#000000;">All VRMS Users</div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="rounded p-4 text-center"
+                     style="background:#ffe5e5;color:#d32f2f;cursor:pointer;"
+                     th:onclick="'window.location.href=\'/rentalReport?userID=' + ${user.userID} + '\''">
+                    <div style="font-size:2.5rem;font-weight:700;">
+                        <span th:text="${rentalCountThisMonth}">0</span>
+                    </div>
+                    <div style="font-size:1.1rem;">Rentals This Month</div>
+                    <div style="font-size:0.95rem;color:#000000;">
+                        <span th:text="'Total: RM ' + ${#numbers.formatDecimal(rentalSumThisMonth,1,'COMMA',2,'POINT')}">Total: RM 0.00</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded p-4 text-center"
+                     style="background:#d32f2f;cursor:pointer;"
+                     th:onclick="'window.location.href=\'/vehicleApproval?userID=' + ${user.userID} + '\''">
+                    <div style="font-size:2.5rem;font-weight:700;color:#ffe5e5;">
+                        <span th:text="${vehicleApprovalCount}">0</span>
+                    </div>
+                    <div style="font-size:1.1rem;color:#ffffff">Vehicles Need Approval</div>
+                    <div style="font-size:0.95rem;color:#ffe5e5;">Status: requested</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="rounded p-4 text-center"
+                     style="background:#d32f2f;cursor:pointer;"
+                     th:onclick="'window.location.href=\'/withdrawApproval?userID=' + ${user.userID} + '\''">
+                    <div style="font-size:2.5rem;font-weight:700;color:#ffe5e5;">
+                        <span th:text="${withdrawApprovalCount}">0</span>
+                    </div>
+                    <div style="font-size:1.1rem;color:#ffffff;">Withdraws Need Approval</div>
+                    <div style="font-size:0.95rem;color:#ffe5e5;">Status: requested</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

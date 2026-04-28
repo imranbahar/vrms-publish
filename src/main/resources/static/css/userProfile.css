@@ -1,0 +1,221 @@
+.card {
+  --font-color: #323232;
+  --font-color-sub: #666;
+  --bg-color: #fff;
+  --main-color: #323232;
+  width: 260px;
+  background: var(--bg-color);
+  border: 2px solid var(--main-color);
+  box-shadow: 4px 4px var(--main-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 1.2rem 2.2rem 1.2rem;
+  position: relative;
+  transition: box-shadow 0.2s;
+  flex-direction: column;
+  align-items: stretch;
+  width: 550px;
+  min-width: 300px;
+  max-width: 98vw;
+  transition: box-shadow 0.2s, background 0.4s;
+}
+
+.card-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 1.2rem;
+  padding-bottom: 0.5rem;
+  flex-wrap: wrap; /* Add this to allow wrapping */
+  min-width: 0;    /* Add this to help with flex overflow */
+  transition: align-items 0.4s, padding-bottom 0.4s;
+}
+
+.card-photo {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-bottom: 0;
+  margin-right: 0;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eee;
+  cursor: pointer;
+  transition: box-shadow 0.2s, width 0.4s, height 0.4s, transform 0.4s;
+
+}
+
+.card-divider {
+  width: 1px;
+  height: 80px;
+  background: #d32f2f;
+  margin: 0 1.2rem;
+  border-radius: 2px;
+}
+
+.card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;      /* Add this */
+  max-width: 320px;  /* Add this or adjust as needed */
+}
+
+.card-title {
+  text-align: left;
+}
+
+.card-contacts {
+  align-items: flex-start;
+}
+
+.button.edit-animate {
+  width: 100%;
+  margin-top: 1.2rem;
+}
+
+.card-photo::after {
+  content: "Click to edit picture";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(50, 50, 50, 0.65);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: auto;
+  border-radius: 50%;
+  transition: opacity 0.25s;
+  text-align: center;
+  padding: 0 10px;
+}
+
+
+.card-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.card-title {
+  text-align: center;
+  color: var(--font-color);
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.2rem;
+}
+
+.card-title span,
+.card-contact span {
+  display: block;
+  font-size: 1rem;
+  color: var(--font-color-sub);
+  font-weight: 400;
+  margin-top: 0.2rem;
+  white-space: nowrap;      /* Prevents line break */
+  overflow: hidden;         /* Hides overflow */
+  text-overflow: ellipsis;  /* Adds ... for overflow */
+  max-width: 300px;         /* Adjust as needed to fit your card */
+}
+
+.card-contacts {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin: 1rem 0 0.5rem 0;
+  width: 100%;
+}
+
+.card-contact {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--font-color-sub);
+  font-size: 1rem;
+  padding-left: 0.2rem;
+}
+
+.card-contact i {
+  color: #d32f2f;
+  font-size: 1.1rem;
+  min-width: 18px;
+}
+
+.button.edit-animate {
+  width: 100%;
+  margin-top: 1.2rem;
+  padding: 0.6rem 0;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.4s, transform 0.4s;
+  pointer-events: none;
+}
+
+.card:hover .button.edit-animate {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.card-photo:hover {
+  box-shadow: 0 0 0 4px #d32f2f;
+  transition: box-shadow 0.2s;
+}
+
+.card-photo:hover::after,
+.card-photo:focus-within::after {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 600px) {
+  .card {
+    width: 98vw;
+    min-width: unset;
+    padding: 1rem 0.5rem 2.2rem 0.5rem;
+  }
+  .card-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding-bottom: 0;
+  }
+  .card-divider {
+    display: none;
+  }
+  .card-title {
+    text-align: center;
+  }
+  .card-info {
+    align-items: center;
+  }
+}

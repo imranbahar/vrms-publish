@@ -1,0 +1,141 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userReport.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Report</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <style>
+        .highlight { background-color: yellow; }
+    </style>
+</head>
+<body id="body-pd">
+    <div th:replace="navbarA :: navbar(${userID})"></div>
+    <div class="container">
+        <h1>User Report</h1>
+        <div class="row mb-3">
+            <div class="col-md-2">
+                <select id="sortName" class="form-control">
+                    <option value="">Sort by Name</option>
+                    <option value="az">A - Z</option>
+                    <option value="za">Z - A</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="sortUserType" class="form-control">
+                    <option value="">Sort by User Type</option>
+                    <option value="renter">Renter</option>
+                    <option value="vehicleowner">Vehicle Owner</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="sortLoginDate" class="form-control">
+                    <option value="">Sort by Login Date</option>
+                    <option value="recent">Recently - Oldest</option>
+                    <option value="oldest">Oldest - Recently</option>
+                </select>
+            </div>
+        </div>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for names..">
+        
+        <div style="overflow-x:auto;">
+            <table class="table table-striped" id="userTable">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone Number</th>
+                        <th>User Type</th>
+                        <th>Login Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="user : ${users}">
+                        <td th:text="${user.userName}"></td>
+                        <td th:text="${user.userEmail}"></td>
+                        <td th:text="${user.userPhoneNumber}"></td>
+                        <td th:text="${user.userType}"></td>
+                        <td th:text="${user.userLoginDate}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'/reportType?userID=' + ${userID} + '\''">Back to Report Type</button>
+    </div>
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+            var table = document.getElementById('userTable');
+            var rows = table.getElementsByTagName('tr');
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var found = false;
+                for (var j = 0; j < cells.length; j++) {
+                    var cellText = cells[j].innerText.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        found = true;
+                        var regex = new RegExp(searchTerm, 'gi');
+                        cells[j].innerHTML = cells[j].innerText.replace(regex, function(match) {
+                            return '<span class="highlight">' + match + '</span>';
+                        });
+                    } else {
+                        cells[j].innerHTML = cells[j].innerText;
+                    }
+                }
+                rows[i].style.display = found ? '' : 'none';
+            }
+        });
+    </script>
+    <script>
+    document.getElementById('sortName').addEventListener('change', sortUserTable);
+    document.getElementById('sortUserType').addEventListener('change', sortUserTable);
+    document.getElementById('sortLoginDate').addEventListener('change', sortUserTable);
+
+    function sortUserTable() {
+        var sortName = document.getElementById('sortName').value;
+        var sortUserType = document.getElementById('sortUserType').value.toLowerCase();
+        var sortLoginDate = document.getElementById('sortLoginDate').value;
+        var table = document.getElementById('userTable');
+        var tbody = table.getElementsByTagName('tbody')[0];
+        var rows = Array.from(tbody.getElementsByTagName('tr'));
+
+        // Filter by user type if selected
+        rows.forEach(function(row) {
+            var type = row.getElementsByTagName('td')[3].innerText.toLowerCase();
+            row.style.display = (!sortUserType || type === sortUserType) ? '' : 'none';
+        });
+
+        // Sort by name if selected
+        var visibleRows = rows.filter(row => row.style.display !== 'none');
+        if (sortName) {
+            visibleRows.sort(function(a, b) {
+                var nameA = a.getElementsByTagName('td')[0].innerText.toLowerCase();
+                var nameB = b.getElementsByTagName('td')[0].innerText.toLowerCase();
+                if (nameA < nameB) return sortName === 'az' ? -1 : 1;
+                if (nameA > nameB) return sortName === 'az' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        // Sort by login date if selected
+        if (sortLoginDate) {
+            visibleRows.sort(function(a, b) {
+                var dateA = new Date(a.getElementsByTagName('td')[4].innerText);
+                var dateB = new Date(b.getElementsByTagName('td')[4].innerText);
+                return sortLoginDate === 'recent' ? dateB - dateA : dateA - dateB;
+            });
+        }
+
+        // Re-append sorted rows
+        visibleRows.forEach(row => tbody.appendChild(row));
+    }
+    </script>
+</body>
+</html>

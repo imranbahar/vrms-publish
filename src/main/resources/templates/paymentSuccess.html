@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Success</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/success.css">
+
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <style>
+       
+    </style>
+</head>
+<body id="body-pd">
+    <div th:replace="navbarRV :: navbar(${userID})"></div>
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+            <span class="success-icon"><i class="fas fa-check-circle"></i></span>
+            <h2 class="main-title">Payment Successful!</h2>
+            <p class="info-note">Thank you for your payment.<br>Your rental has been successfully confirmed.</p>
+            <a th:href="@{/renterHome(userID=${userID})}" class="btn-confirm">Return to Dashboard</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vehicle Sharing Management Service System</title>
+
+    <!-- Bootstrap & Icons -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/try.css">
+    <link rel="stylesheet" href="css/homepage.css">
+    <script src="/js/try.js"></script>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <!-- Internal Styling for simplicity -->
+</head>
+<body id="body-pd">
+
+    <div th:replace="navbarRV :: navbar(${user.userID})"></div>
+
+    <section class="hero-section">
+        <div class="hero-text">
+            <div class="badge-tag">CHOOSE · PAY · CONFIRM</div>
+            <div class="textbottom">
+                <p>Welcome <strong th:text="${user.userName}">User</strong> to</p>
+                <h1>Vehicle Rental<br>Management<br>Service System</h1>
+                <input type="hidden" th:value="${user.userID}" id="userID" readonly>
+                <div class="hero-buttons">
+                    <button type="button" class="btn btn-primary"
+                        th:onclick="'window.location.href=\'/userProfile?userID=' + ${user.userID} + '\''">
+                        Profile
+                    </button>
+                    <button type="button" class="btn btn-outline-dark" onclick="window.location.href='/logout'">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="/images/homepagepic.png" alt="User Image">
+        </div>
+    </section>
+
+</body>
+</html>

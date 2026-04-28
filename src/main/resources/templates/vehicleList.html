@@ -1,0 +1,210 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/vehicleList.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vehicle List</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <link rel="stylesheet" href="/css/button.css">
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="container">
+        <h1>Vehicle List</h1>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search vehicles...">
+            </div>
+            <div class="col-md-2">
+                <select id="sortPrice" class="form-control">
+                    <option value="">Sort by Price</option>
+                    <option value="expensive">Expensive - Cheapest</option>
+                    <option value="cheapest">Cheapest - Expensive</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filterType" class="form-control">
+                    <option value="">All Types</option>
+                    <option value="motorcycle">Motorcycle</option>
+                    <option value="car">Car</option>
+                    <option value="van">Van</option>
+                    <option value="bus">Bus</option>
+                    <option value="lorry">Lorry</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select id="filterStatus" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="requested">Requested</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                </select>
+            </div>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="table table-striped" id="vehicleTable">
+                <thead>
+                    <tr>
+                        <th>Plate Number</th>
+                        <th>Type</th>
+                        <th>Price per Hour</th>
+                        <th>Owner Name</th>
+                        <th>Image</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="vehicle : ${vehiclesWithOwners}">
+                        <td th:text="${vehicle.vehiclePlateNumber}">Plate Number</td>
+                        <td th:text="${vehicle.vehicleType}">Type</td>
+                        <td th:text="${vehicle.vehiclePrice}">Price per Hour</td>
+                        <td th:text="${vehicle.ownerName}">Owner Name</td>
+                        <td>
+                            <img th:src="'data:image/jpeg;base64,' + ${vehicle.vehiclePicString}" alt="Vehicle Image" style="width: 100px; height: 80px;"/>
+                        </td>
+                        <td th:text="${vehicle.vehicleAddress}">Location</td>
+                        <td th:text="${vehicle.vehicleStatus}">Status</td>
+                       <td>
+                            <a th:if="${vehicle.vehicleStatus != 'rejected'}"
+                            th:href="@{/vehicleEdit(vehicleID=${vehicle.vehicleID}, userID=${userID})}"
+                            class="btn btn-primary vehicle-action-btn">Edit</a>
+                            <a href="#"
+                            class="btn btn-danger vehicle-action-btn delete-vehicle-btn"
+                            th:data-href="@{/vehicleDelete(vehicleID=${vehicle.vehicleID}, userID=${userID})}">
+                            Delete
+                            </a>
+                        </td>
+                    </tr>
+                    <div id="imgModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; overflow:auto; background:rgba(0,0,0,0.8);">
+                        <span style="position:absolute;top:20px;right:35px;color:#fff;font-size:40px;font-weight:bold;cursor:pointer;" onclick="closeModalImage()">&times;</span>
+                        <img id="modalImg" style="margin:auto;display:block;max-width:80%;max-height:80%;position:absolute;top:0;left:0;right:0;bottom:0;">
+                    </div>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+
+    
+    <script>
+    // Delete Vehicle Confirmation
+    document.querySelectorAll('.delete-vehicle-btn').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const href = btn.getAttribute('data-href');
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, delete it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = href;
+                }
+            });
+        });
+    });
+    // Filter and Sort Functionality
+    document.getElementById('searchInput').addEventListener('keyup', filterTable);
+    document.getElementById('sortPrice').addEventListener('change', filterTable);
+    document.getElementById('filterType').addEventListener('change', filterTable);
+    document.getElementById('filterStatus').addEventListener('change', filterTable);
+
+    // Add this dropdown for status sorting if you want user control
+    // <select id="sortStatus" class="form-control">
+    //     <option value="">Sort by Status</option>
+    //     <option value="custom">Requested → Rejected → Approved</option>
+    // </select>
+    // document.getElementById('sortStatus').addEventListener('change', filterTable);
+
+    function filterTable() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var sortPrice = document.getElementById('sortPrice').value;
+        var filterType = document.getElementById('filterType').value.toLowerCase();
+        var filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+        var table = document.getElementById('vehicleTable');
+        var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // skip header
+
+        // Filter rows
+        rows.forEach(function(row) {
+            var cells = row.getElementsByTagName('td');
+            var type = cells[1].innerText.toLowerCase();
+            var price = parseFloat(cells[2].innerText.replace(/[^0-9.]/g, '')) || 0;
+            var status = cells[6].innerText.toLowerCase();
+            var rowText = row.innerText.toLowerCase();
+
+            var show = true;
+            if (searchTerm && !rowText.includes(searchTerm)) show = false;
+            if (filterType && type !== filterType) show = false;
+            if (filterStatus && status !== filterStatus) show = false;
+
+            row.style.display = show ? '' : 'none';
+            row.setAttribute('data-price', price);
+            row.setAttribute('data-status', status);
+        });
+
+        // Sort rows by price if needed
+        if (sortPrice) {
+            var visibleRows = rows.filter(row => row.style.display !== 'none');
+            visibleRows.sort(function(a, b) {
+                var priceA = parseFloat(a.getAttribute('data-price'));
+                var priceB = parseFloat(b.getAttribute('data-price'));
+                return sortPrice === 'expensive' ? priceB - priceA : priceA - priceB;
+            });
+            var tbody = table.getElementsByTagName('tbody')[0];
+            visibleRows.forEach(row => tbody.appendChild(row));
+        } else {
+            // Custom status sort: requested (0), rejected (1), approved (2)
+            var statusOrder = { "requested": 0, "rejected": 1, "approved": 2 };
+            var visibleRows = rows.filter(row => row.style.display !== 'none');
+            visibleRows.sort(function(a, b) {
+                var statusA = statusOrder[a.getAttribute('data-status')] ?? 99;
+                var statusB = statusOrder[b.getAttribute('data-status')] ?? 99;
+                return statusA - statusB;
+            });
+            var tbody = table.getElementsByTagName('tbody')[0];
+            visibleRows.forEach(row => tbody.appendChild(row));
+        }
+    }
+    </script>
+
+    <script>
+    function showModalImage(src) {
+        document.getElementById('imgModal').style.display = 'block';
+        document.getElementById('modalImg').src = src;
+    }
+    function closeModalImage() {
+        document.getElementById('imgModal').style.display = 'none';
+    }
+
+    // Attach click event to all vehicle images
+    document.querySelectorAll('img[alt="Vehicle Image"]').forEach(function(img) {
+        img.style.cursor = 'pointer';
+        img.onclick = function() {
+            showModalImage(this.src);
+        };
+    });
+    </script>
+    <script>
+    if (window.location.search.includes('registerSuccess=true')) {
+        Swal.fire({
+            icon: "success",
+            title: "Vehicle registered successfully!",
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
+    </script>
+</body>
+</html>

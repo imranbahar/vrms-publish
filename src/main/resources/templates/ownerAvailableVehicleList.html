@@ -1,0 +1,109 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/rentalAvailableVehicleList.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Available Vehicles</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/menucard.css">
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="container">
+        <input type="hidden" name="userID" th:value="${userID}">
+        <h1>Available Vehicles</h1>
+        <form method="get" th:action="@{/ownerAvailableVehicleList}" class="form-inline mb-3">
+            <input type="hidden" name="userID" th:value="${userID}" />
+            <input type="hidden" name="startDate" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+            <input type="hidden" name="endDate" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+            <input type="hidden" name="startTime" th:value="${startTime}" />
+            <input type="hidden" name="endTime" th:value="${endTime}" />
+            <input type="text" name="search" id="searchInput" class="form-control mr-2" placeholder="Search vehicles..." th:value="${search}">
+            <select name="vehicleType" id="typeFilter" class="form-control mr-2">
+                <option value="">All Types</option>
+                <option value="motorcycle" th:selected="${vehicleType == 'motorcycle'}">Motorcycle</option>
+                <option value="car" th:selected="${vehicleType == 'car'}">Car</option>
+                <option value="van" th:selected="${vehicleType == 'van'}">Van</option>
+                <option value="bus" th:selected="${vehicleType == 'bus'}">Bus</option>
+                <option value="lorry" th:selected="${vehicleType == 'lorry'}">Lorry</option>
+            </select>
+            <button type="submit" class="btn btn-primary">Apply</button>
+        </form>
+        <div class="row">
+            <div class="col-12 col-md-4 mb-4 d-flex justify-content-center" th:each="vehicle : ${availableVehicles}">
+                <div class="card">
+                    <div class="card__shine"></div>
+                    <div class="card__glow"></div>
+                    <div class="card__content">
+                        <div class="card__badge">Available</div>
+                        <div class="card__image">
+                            <img th:src="'data:image/jpeg;base64,' + ${vehicle.vehiclePicString}" alt="Vehicle Image">
+                        </div>
+                        <div class="card__text">
+                            <p class="card__title" th:text="${vehicle.vehiclePlateNumber}">Plate Number</p>
+                            <p class="card__description">
+                                <b>Type:</b> <span th:text="${vehicle.vehicleType}">Type</span><br>
+                               
+                            </p>
+                        </div>
+                        <div class="card__footer">
+                            <div class="card__button">
+                                <form th:action="@{/ownerAvailableVehicleList}" method="post">
+                                    <input type="hidden" name="vehicleID" th:value="${vehicle.vehicleID}" />
+                                    <input type="hidden" name="userID" th:value="${userID}" />
+                                    <input type="hidden" name="startDate" th:value="${#dates.format(startDate, 'yyyy-MM-dd')}" />
+                                    <input type="hidden" name="endDate" th:value="${#dates.format(endDate, 'yyyy-MM-dd')}" />
+                                    <input type="hidden" name="startTime" th:value="${startTime}" />
+                                    <input type="hidden" name="endTime" th:value="${endTime}" />
+                                    <button type="button" class="btn btn-primary" style="color:white;" onclick="confirmOwnerBooking(this.form)">Book</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+    </div>
+    
+    <script>
+    function confirmOwnerBooking(form) {
+        Swal.fire({
+            title: 'Are you sure to book this?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, book it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
+            }
+        });
+    }
+    </script>
+    <script>
+    document.getElementById('searchInput').addEventListener('keyup', filterCards);
+    document.getElementById('typeFilter').addEventListener('change', filterCards);
+
+    function filterCards() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var type = document.getElementById('typeFilter').value.toLowerCase();
+        var cards = document.querySelectorAll('.card');
+
+        cards.forEach(function(card) {
+            var plate = card.querySelector('.card__title').innerText.toLowerCase();
+            var vtype = card.querySelector('.card__description span').innerText.toLowerCase();
+            var show = true;
+            if (searchTerm && !plate.includes(searchTerm)) show = false;
+            if (type && vtype !== type) show = false;
+            card.parentElement.style.display = show ? '' : 'none';
+        });
+    }
+    </script>
+</body>
+</html>

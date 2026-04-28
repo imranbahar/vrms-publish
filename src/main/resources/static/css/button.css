@@ -1,0 +1,43 @@
+.vehicle-action-btn {
+    min-width: 90px;
+    max-width: 120px;
+    width: 100px;
+    margin-right: 8px;
+    text-align: center;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+    border-radius: 0.4rem;
+    display: inline-block;
+}
+
+/* Inactive tab: white background, red border/text */
+.btn-outline-primary {
+    background-color: #fff !important;
+    border-color: #d32f2f !important;
+    color: #d32f2f !important;
+    box-shadow: none;
+}
+
+/* Active tab: red background, white text, no extra border/line */
+.btn-outline-primary.active,
+.btn-outline-primary:active,
+.btn-outline-primary.active:focus,
+.btn-outline-primary:focus,
+.btn-outline-primary:hover {
+    background-color: #d32f2f !important;
+    border-color: #d32f2f !important;
+    color: #fff !important;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Remove left border/line for active/hovered buttons in .btn-group */
+.btn-group .btn-outline-primary.active,
+.btn-group .btn-outline-primary:active,
+.btn-group .btn-outline-primary.active:focus,
+.btn-group .btn-outline-primary:focus,
+.btn-group .btn-outline-primary:hover {
+    border-left: 1px solid #d32f2f !important;
+    margin-left: 0 !important;
+}
+

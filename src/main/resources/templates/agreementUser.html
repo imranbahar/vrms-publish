@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Agreement</title>
+    <link rel="stylesheet" href="/css/login.css">
+    <link rel="stylesheet" href="/css/agreement.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      .white-text { color: #fff; }
+    </style>
+</head>
+<body>
+    <div class="left-panel" style="background: #e74c3c;">
+        <h1 class="white-text">WELCOME TO</h1>
+        <h1 class="white-text">VEHICLE RENTAL</h1>
+        <h1 class="white-text">MANAGEMENT</h1>
+        <h1 class="white-text">SERVICE SYSTEM</h1>
+        <p class="white-text">Rent your desired vehicle to rent</p>
+    </div>
+    <div class="right-panel">
+        <div class="container">
+            <div class="brutalist-card">
+                <div class="brutalist-card__header">
+                    <div class="brutalist-card__icon">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div class="brutalist-card__alert">User Agreement</div>
+                </div>
+                <div class="brutalist-card__message">
+                    Please read and agree to the terms and conditions before proceeding.<br>
+                    <small>1. You must return the vehicle rented as same as before rented.</small><br>
+                    <small>2. You must ensure the vehicle is in good condition before returning it.</small><br>
+                    <small>3. You must report any damage or issues with the vehicle to the owner immediately.</small><br>
+                    <small>4. You must comply with all local laws and regulations regarding vehicle rental.</small><br>
+                    <small>5. You must ensure that you have a valid driver's license and insurance to drive the vehicle.</small><br>
+                    <small>6. You must not use the vehicle for illegal activities or purposes.</small><br>
+                    <small>7. You must respect the owner's privacy and not disclose any personal information without consent.</small><br>
+                    <small>8. You must ensure that the vehicle is returned on time as agreed with the owner.</small><br>
+                    <small>9. You must ensure that the vehicle is returned with the same amount of fuel as when it was rented.</small><br>
+                </div>
+                <div class="brutalist-card__actions">
+                    <button type="button" class="brutalist-card__button brutalist-card__button--read" id="agreeBtn">
+                        I Agree
+                    </button>
+                    <button type="button" class="brutalist-card__button brutalist-card__button--mark"
+                            id="disagreeBtn"
+                            th:data-userid="${userID}">I Disagree</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.getElementById('agreeBtn').addEventListener('click', function() {
+        window.location.href = '/userLogin';
+    });
+    document.getElementById('disagreeBtn').addEventListener('click', function() {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Do you have read the agreement? Your account will not be registered and you won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, continue"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const userID = this.getAttribute('data-userid');
+                window.location.href = '/cancelUserRegister?userID=' + userID;
+            }
+        });
+    });
+    </script>
+</body>
+</html>

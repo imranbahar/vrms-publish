@@ -1,0 +1,134 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/withdrawReport.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Withdraw List</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+    <style>
+        .highlight { background-color: yellow; }
+    </style>
+</head>
+<body>
+    <div th:replace="navbarA :: navbar(${userID})"></div>
+    <div class="container mt-4">
+        <h1>Withdraw Report</h1>
+       <div class="row mb-3">
+            <div class="col-md-3">
+                <select id="sortAmount" class="form-control">
+                    <option value="">Sort by Amount</option>
+                    <option value="highest">Highest - Lowest</option>
+                    <option value="lowest">Lowest - Highest</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filterStatus" class="form-control">
+                    <option value="">All Status</option>
+                    <option value="completed">Completed</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="requested">Requested</option>
+                </select>
+            </div>
+        </div>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for withdraws..">
+        
+        <div style="overflow-x:auto;">
+            <table class="table table-bordered mt-3" id="withdrawTable">
+                <thead>
+                    <tr>
+                        <th>Withdraw Amount</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                        <th>Vehicle Owner Name</th>
+                        <th>Vehicle Owner Email</th>
+                        <th>Vehicle Owner Phone</th>
+                        <th>Manager Name</th>
+                        <th>Manager Phone</th>
+                        <th>Manager Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="withdraw : ${withdraws}">
+                        <td th:text="${withdraw.withdrawAmount}"></td>
+                        <td th:text="${withdraw.withdrawStatus}"></td>
+                        <td>
+                            <span th:if="${withdraw.receiptPdf != null}">
+                                <a th:href="@{/previewReceipt(withdrawID=${withdraw.withdrawID})}" target="_blank">Preview PDF</a>
+                            </span>
+                            <span th:if="${withdraw.receiptPdf == null}">No Receipt</span>
+                        </td>
+                        <td th:text="${ownerMap[withdraw.ownerID] != null ? ownerMap[withdraw.ownerID].userName : ''}"></td>
+                        <td th:text="${ownerMap[withdraw.ownerID] != null ? ownerMap[withdraw.ownerID].userEmail : ''}"></td>
+                        <td th:text="${ownerMap[withdraw.ownerID] != null ? ownerMap[withdraw.ownerID].userPhoneNumber : ''}"></td>
+                        <td th:text="${managerMap != null and managerMap[withdraw.userID] != null and (withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID].userName : ''}"></td>
+                        <td th:text="${managerMap != null and managerMap[withdraw.userID] != null and (withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID].userPhoneNumber : ''}"></td>
+                        <td th:text="${managerMap != null and managerMap[withdraw.userID] != null and (withdraw.withdrawStatus == 'COMPLETED' or withdraw.withdrawStatus == 'REJECTED') ? managerMap[withdraw.userID].userEmail : ''}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <button type="button" class="btn btn-primary mt-3" th:onclick="'window.location.href=\'/reportType?userID=' + ${userID} + '\''">Back to Report Type</button>
+    </div>
+    <script>
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            var searchTerm = this.value.toLowerCase();
+            var table = document.getElementById('withdrawTable');
+            var rows = table.getElementsByTagName('tr');
+            for (var i = 1; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName('td');
+                var found = false;
+                for (var j = 0; j < cells.length; j++) {
+                    var cellText = cells[j].innerText.toLowerCase();
+                    if (cellText.includes(searchTerm)) {
+                        found = true;
+                        var regex = new RegExp(searchTerm, 'gi');
+                        cells[j].innerHTML = cells[j].innerText.replace(regex, function(match) {
+                            return '<span class="highlight">' + match + '</span>';
+                        });
+                    } else {
+                        cells[j].innerHTML = cells[j].innerText;
+                    }
+                }
+                rows[i].style.display = found ? '' : 'none';
+            }
+        });
+    </script>
+    
+    <script>
+    document.getElementById('sortAmount').addEventListener('change', filterWithdrawTable);
+    document.getElementById('filterStatus').addEventListener('change', filterWithdrawTable);
+
+    function filterWithdrawTable() {
+        var sortAmount = document.getElementById('sortAmount').value;
+        var filterStatus = document.getElementById('filterStatus').value.toLowerCase();
+        var table = document.getElementById('withdrawTable');
+        var tbody = table.getElementsByTagName('tbody')[0];
+        var rows = Array.from(tbody.getElementsByTagName('tr'));
+
+        // Filter by status
+        rows.forEach(function(row) {
+            var status = row.getElementsByTagName('td')[1].innerText.trim().toLowerCase();
+            row.style.display = (!filterStatus || status === filterStatus) ? '' : 'none';
+        });
+
+        // Only sort visible rows
+        var visibleRows = rows.filter(row => row.style.display !== 'none');
+
+        // Sort by amount
+        if (sortAmount) {
+            visibleRows.sort(function(a, b) {
+                var amountA = parseFloat(a.getElementsByTagName('td')[0].innerText.replace(/[^0-9.]/g, '')) || 0;
+                var amountB = parseFloat(b.getElementsByTagName('td')[0].innerText.replace(/[^0-9.]/g, '')) || 0;
+                return sortAmount === 'highest' ? amountB - amountA : amountA - amountB;
+            });
+            visibleRows.forEach(row => tbody.appendChild(row));
+        }
+    }
+    </script>
+</body>
+</html>

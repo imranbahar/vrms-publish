@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Rental Confirmation</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/try.css">
+
+    <link rel="stylesheet" href="/css/confirm.css">
+
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd"> 
+
+  
+    <div th:replace="navbarRV :: navbar(${user.userID})"></div>
+
+   
+    <div class="confirmation-container">
+        <div class="confirmation-card">
+
+            
+            <div class="details-column">
+                <span class="pre-title">RENTAL CONFIRMATION</span>
+                <h2 class="main-title" th:text="${vehicle.vehicleType}">Vehicle Type</h2>
+                <p class="sub-title">
+                    Booked for <span th:text="${user.userName}">User Name</span>
+                    (<span th:text="${user.userEmail}">user@email.com</span>)
+                </p>
+                <!-- Optional: Add a small note like in the example -->
+                 <p class="info-note">Your booking details are below. Proceed to payment to finalize.</p>
+
+                <div class="info-grid">
+                    <div class="info-section">
+                        <span class="section-label">RENTAL PERIOD & LOCATION</span>
+                        <p th:text="'Start: ' + ${startDate} + ' ' + ${startTime}">Start: Date Time</p>
+                        <p th:text="'End: ' + ${endDate} + ' ' + ${endTime}">End: Date Time</p>
+                        <p th:text="'Duration: ' + ${duration}">Duration: X hours/days</p>
+                        <p th:if="${vehicleLocationAddress}" th:text="'Location: ' + ${vehicleLocationAddress}"></p>
+                        <p th:if="${vehicleLocation} and !${vehicleLocationAddress}" th:text="'Location: ' + ${vehicleLocation}"></p>
+                    </div>
+                    <div class="info-section">
+                        <span class="section-label">VEHICLE & PRICE DETAILS</span>
+                        <p th:text="'Plate No: ' + ${vehicle.vehiclePlateNumber}">Plate No: ABC 123</p>
+                        <p>Rate: RM <span th:text="${#numbers.formatDecimal(vehicle.vehiclePrice, 1, 'COMMA', 2, 'POINT')}">0.00</span> / Hour</p>
+                        <p class="total-price">Total: RM <span th:text="${#numbers.formatDecimal(totalPrice, 1, 'COMMA', 2, 'POINT')}">0.00</span></p>
+                        <p th:text="'Phone: ' + ${user.userPhoneNumber}">Phone: 012-3456789</p>
+                    </div>
+                </div>
+
+                <div class="actions-footer">
+                     <!-- Optional Social Icons Placeholder -->
+                    <div class="social-icons">
+                       
+                    </div>
+
+                    <div class="action-buttons">
+                         <!-- Cancel Form (Styled less prominently) -->
+                        <form th:action="@{/rentalDelete}" method="post" class="cancel-form">
+                            <input type="hidden" name="rentalID" th:value="${rentalID}">
+                            <input type="hidden" name="userID" th:value="${user.userID}">
+                            <button type="submit" class="btn-cancel">Cancel Booking</button>
+                        </form>
+                         <!-- Payment Form (Styled prominently) -->
+                        <form th:action="@{/rentalPaymentType}" method="get" class="payment-form">
+                            <input type="hidden" name="rentalID" th:value="${rentalID}">
+                            <input type="hidden" name="userID" th:value="${user.userID}">
+                            <button type="submit" class="btn-confirm">Continue to Payment</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Image Column (Right) -->
+            <div class="image-column">
+                <img th:src="'data:image/jpeg;base64,' + ${vehicle.vehiclePicString}" alt="Vehicle Image"/>
+            </div>
+
+        </div> <!-- End confirmation-card -->
+    </div> <!-- End confirmation-container -->
+
+</body>
+</html>

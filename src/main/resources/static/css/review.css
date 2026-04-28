@@ -1,0 +1,164 @@
+.rating {
+  display: inline-block;
+}
+
+.rating input {
+  display: none;
+}
+
+.rating label {
+  float: right;
+  cursor: pointer;
+  color: #ccc;
+  transition: color 0.3s;
+}
+
+.rating label:before {
+  content: '\2605';
+  font-size: 30px;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: #6f00ff;
+  transition: color 0.3s;
+}
+
+
+.star-rating {
+  color: #ffc700;
+  font-size: 1.3rem;
+}
+
+
+.rating-card {
+  width: 420px;
+  min-height: 420px;
+  background: #d32f2f;
+  color: #fff;
+  border-radius: 1.5rem;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 2.5rem 2.5rem 1.5rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 2rem auto;
+}
+
+.rating-card label {
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.rating-card .form-control {
+  color: #000 !important;
+  font-size: 1.2rem;
+}
+
+.rating-card textarea.form-control {
+  min-height: 80px;
+  resize: none;
+}
+
+.rating-card button {
+  font-size: 1.2rem;
+  width: 100%;
+}
+
+.rating-card .text-wrapper,
+.rating-card .text-primary,
+.rating-card .text-secondary,
+.rating-card label,
+.rating-card input,
+.rating-card textarea {
+  color: #fff !important;
+}
+
+
+
+.text-wrapper {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.text-primary {
+  color: white;
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.text-secondary {
+  color: #cccccc;
+  font-size: 1.2rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-align: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.rating-stars-container {
+  width: 100%;
+  height: 60px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.star-label svg {
+  fill: rgb(210, 210, 210);
+  width: 38px;
+  height: 38px;
+  transition: fill 0.2s;
+}
+
+.rating-stars-container input {
+  appearance: unset;
+}
+.rating-stars-container input:hover ~ .star-label svg {
+  fill: rgb(255, 204, 185);
+}
+.rating-stars-container input:checked ~ .star-label svg {
+  fill: rgb(255, 102, 47);
+  animation: slide-in-fwd-center 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@keyframes slide-in-fwd-center {
+  0% {
+    transform: scale(1.6);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.socials-container {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(150, 150, 150);
+}
+.social-button {
+  text-decoration: none;
+}
+.social-button svg {
+  width: 15px;
+  fill: rgb(228, 228, 228);
+}
+.social-button:hover svg {
+  fill: rgb(255, 102, 47);
+}

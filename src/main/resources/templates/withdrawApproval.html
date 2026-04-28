@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Withdraw Approval</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <link rel="stylesheet" href="/css/list.css">
+    <link rel="stylesheet" href="/css/button.css">
+    <script src="/js/try.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarA :: navbar(${userID})"></div>
+    <div class="container">
+        <h1>Withdraw Approval</h1>
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <input type="text" id="searchInput" class="form-control" placeholder="Search withdraws...">
+            </div>
+            <div class="col-md-3">
+                <select id="sortAmount" class="form-control">
+                    <option value="">Sort by Amount</option>
+                    <option value="highest">Highest - Lowest</option>
+                    <option value="lowest">Lowest - Highest</option>
+                </select>
+            </div>
+        </div>
+        <div style="overflow-x:auto;">
+            <table class="table table-striped" id="withdrawTable">
+                <thead>
+                    <tr>
+                        <th>Owner Name</th>
+                        <th>Phone Number</th>
+                        <th>Email</th>
+                        <th>Withdraw Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="withdraw : ${requestedWithdraws}">
+                        <td th:text="${ownerMap[withdraw.ownerID]?.ownerName}">Owner Name</td>
+                        <td th:text="${ownerMap[withdraw.ownerID]?.ownerPhoneNumber}">Phone</td>
+                        <td th:text="${ownerMap[withdraw.ownerID]?.ownerEmail}">Email</td>
+                        <td th:text="${withdraw.withdrawAmount}">Amount</td>
+                        <td th:text="${withdraw.withdrawStatus}">Status</td>
+                        <td>
+                            <form th:action="@{/uploadWithdrawTransactionReceipt}" method="get" style="display:inline;">
+                                <input type="hidden" name="withdrawID" th:value="${withdraw.withdrawID}">
+                                <input type="hidden" name="userID" th:value="${userID}">
+                                <button type="submit" class="btn btn-success">Upload Receipt</button>
+                            </form>
+                            <form th:action="@{/rejectWithdraw}" method="post" style="display:inline;" class="reject-form">
+                                <input type="hidden" name="withdrawID" th:value="${withdraw.withdrawID}">
+                                <input type="hidden" name="userID" th:value="${userID}">
+                                <button type="submit" class="btn btn-danger">Reject Request</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
+        <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'/approvalType?userID=' + ${userID} + '\''">Back to Approval Type</button>
+    </div>
+    <script>
+    document.querySelectorAll('.reject-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d32f2f",
+                confirmButtonText: "Yes, reject it!"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        });
+    });
+    </script>
+    <script>
+    document.getElementById('searchInput').addEventListener('keyup', filterWithdrawTable);
+    document.getElementById('sortAmount').addEventListener('change', filterWithdrawTable);
+
+    function filterWithdrawTable() {
+        var searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        var sortAmount = document.getElementById('sortAmount').value;
+        var table = document.getElementById('withdrawTable');
+        var rows = Array.from(table.getElementsByTagName('tr')).slice(1); // skip header
+
+        // Filter rows
+        rows.forEach(function(row) {
+            var cells = row.getElementsByTagName('td');
+            var amount = parseFloat(cells[3].innerText.replace(/[^0-9.]/g, '')) || 0; // Withdraw Amount column
+            var rowText = row.innerText.toLowerCase();
+
+            var show = true;
+            if (searchTerm && !rowText.includes(searchTerm)) show = false;
+
+            row.style.display = show ? '' : 'none';
+            row.setAttribute('data-amount', amount);
+        });
+
+        // Sorting
+        var visibleRows = rows.filter(row => row.style.display !== 'none');
+        if (sortAmount) {
+            visibleRows.sort(function(a, b) {
+                var amountA = parseFloat(a.getAttribute('data-amount'));
+                var amountB = parseFloat(b.getAttribute('data-amount'));
+                return sortAmount === 'highest' ? amountB - amountA : amountA - amountB;
+            });
+            var tbody = table.getElementsByTagName('tbody')[0];
+            visibleRows.forEach(row => tbody.appendChild(row));
+        }
+    }
+    </script>
+</body>
+</html>

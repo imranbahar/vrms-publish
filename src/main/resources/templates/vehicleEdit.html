@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Vehicle</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vehicleRegister.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@geoapify/geocoder-autocomplete@3.0.1/styles/minimal.css">
+
+    <style>
+        .autocomplete-container {
+            position: relative;
+            z-index: 9999 !important; 
+        }
+        .geoapify-autocomplete-items {
+            position: absolute !important;
+            z-index: 10000 !important;
+            background-color: #ffffff !important;
+            color: #000000 !important; 
+            border: 1px solid #ccc !important;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+            width: 100%;
+        }
+        .geoapify-autocomplete-item {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            text-align: left !important;
+        }
+        #map {
+            position: relative;
+            z-index: 1 !important;
+        }
+        .form-group, .left-panel {
+            overflow: visible !important; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="left-panel">
+            <h1>EDIT VEHICLE</h1>
+            <form action="#" th:action="@{/vehicleEdit}" method="post" enctype="multipart/form-data" th:object="${vehicleDTO}">
+                <input type="hidden" name="userID" th:value="${userID}">
+                <input type="hidden" name="vehicleID" th:value="${vehicleID}">
+                
+                <div class="form-group">
+                    <label for="vehiclePlateNumber">PLATE NUMBER</label>
+                    <input type="text" class="form-control" id="vehiclePlateNumber" name="vehiclePlateNumber" th:field="*{vehiclePlateNumber}" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehicleType">VEHICLE TYPE</label>
+                    <select class="form-control" id="vehicleType" name="vehicleType" th:field="*{vehicleType}" required>
+                        <option value="motorcycle">Motorcycle</option>
+                        <option value="car">Car</option>
+                        <option value="van">Van</option>
+                        <option value="bus">Bus</option>
+                        <option value="lorry">Lorry</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="vehiclePrice">PRICE PER HOUR</label>
+                    <input type="number" min="0" step=".01" class="form-control" id="vehiclePrice" name="vehiclePrice" th:field="*{vehiclePrice}" required>
+                </div>
+                <div class="form-group">
+                    <label for="vehiclePicture">VEHICLE PICTURE</label>
+                    <input type="file" class="form-control" id="vehiclePicture" name="vehiclePicture" th:field="*{vehiclePicture}">
+                </div>
+                <div class="form-group">
+                    <label for="vehicleOC">OWNERSHIP CERTIFICATE</label>
+                    <input type="file" class="form-control" id="vehicleOC" name="vehicleOC" th:field="*{vehicleOC}">
+                </div>
+                
+                <div class="form-group">
+                    <label>SEARCH LOCATION</label>
+                    <div id="autocomplete" class="autocomplete-container"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vehicleLocation">VEHICLE LOCATION</label>
+                    <input type="text" class="form-control" id="vehicleLocation" name="vehicleLocation" th:field="*{vehicleLocation}" readonly required>
+                    <div id="map" style="height:300px;width:100%;margin-top:10px;border-radius:8px;"></div>
+                </div>
+                
+                <div>
+                    <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/vehicleList?userID=' + ${userID} + '\''">CANCEL</button>
+                    <button type="submit" class="btn btn-primary">UPDATE</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="right-panel">
+            <h1>WELCOME TO</h1>
+            <h1>VEHICLE SHARING</h1>
+            <h1>MANAGEMENT</h1>
+            <h1>SERVICE SYSTEM</h1>
+            <p>Rent your desired vehicle to rent</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@geoapify/geocoder-autocomplete@3.0.1/dist/index.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // PASTE YOUR FRONTEND GEOAPIFY KEY HERE
+        const geoapifyKey = "6d7897b5a1874546b7c8824a812926b8"; 
+
+        let locInput = document.getElementById('vehicleLocation');
+        let initialLat = 5.3294; // Default KT
+        let initialLon = 103.1370;
+
+        // 1. Read existing location if the vehicle already has coordinates saved
+        if (locInput.value && locInput.value.includes(',')) {
+            let parts = locInput.value.split(',');
+            initialLat = parseFloat(parts[0]);
+            initialLon = parseFloat(parts[1]);
+        } else {
+            locInput.value = initialLat.toFixed(6) + ',' + initialLon.toFixed(6);
+        }
+
+        // 2. Initialize Leaflet Map
+        let map = L.map('map').setView([initialLat, initialLon], 15);
+
+        // 3. Add Geoapify Tiles
+        L.tileLayer(`https://maps.geoapify.com/v1/tile/osm-carto/{z}/{x}/{y}.png?apiKey=${geoapifyKey}`, {
+            attribution: 'Powered by <a href="https://www.geoapify.com/" target="_blank">Geoapify</a> | <a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap</a>',
+            maxZoom: 19
+        }).addTo(map);
+
+        // 4. Initialize Marker
+        let marker = L.marker([initialLat, initialLon], { draggable: true }).addTo(map);
+
+        // Update hidden input function
+        function updateLocation(lat, lon) {
+            locInput.value = lat.toFixed(6) + ',' + lon.toFixed(6);
+        }
+
+        // Handle Marker Drag
+        marker.on('dragend', function () {
+            const pos = marker.getLatLng();
+            updateLocation(pos.lat, pos.lng);
+        });
+
+        // Handle Map Click
+        map.on('click', function (e) {
+            marker.setLatLng(e.latlng);
+            updateLocation(e.latlng.lat, e.latlng.lng);
+        });
+
+        // 5. Initialize Geoapify Autocomplete
+        const geocoder = new autocomplete.GeocoderAutocomplete(
+            document.getElementById("autocomplete"), 
+            geoapifyKey, 
+            { placeholder: "Search location in Kuala Terengganu" }
+        );
+
+        // Restrict search to Malaysia
+        geocoder.addFilterByCountrycode(['my']);
+
+        // Handle autocomplete selection
+        geocoder.on('select', (location) => {
+            if (!location) return;
+
+            const lat = location.properties.lat;
+            const lon = location.properties.lon;
+
+            // Simple Bounds Check for Kuala Terengganu
+            if (lat < 5.20 || lat > 5.45 || lon < 103.05 || lon > 103.25) {
+                Swal.fire('Out of Bounds', 'Please select a location within Kuala Terengganu.', 'warning');
+                return;
+            }
+
+            // Move Map and Marker
+            updateLocation(lat, lon);
+            map.setView([lat, lon], 16);
+            marker.setLatLng([lat, lon]);
+        });
+    });
+    </script>
+</body>
+</html>

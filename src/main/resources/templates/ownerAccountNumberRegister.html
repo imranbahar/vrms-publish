@@ -1,0 +1,59 @@
+<!-- filepath: /c:/PROJECT PITA/vsms/vsms/src/main/resources/templates/userRegister.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Register Account</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/account.css">
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="left-panel">
+            <h1>REGISTER ACCOUNT NUMBER</h1>
+            <form action="#" th:action="@{/ownerAccountNumberRegister}" method="post">
+                <input type="hidden" name="userID" th:value="${userID}">
+                <div class="form-group">
+                    <label for="accountNumber">ACCOUNT NUMBER</label>
+                    <input type="text" class="form-control" id="accountNumber" name="accountNumber" required>
+                </div>
+
+               <div class="form-group">
+                    <label for="bankName">BANK NAME</label>
+                    <select class="form-control" id="bankName" name="bankName" required>
+                        <option value="" disabled selected>Select your bank</option>
+                        <option>Maybank2U</option>
+                        <option>CIMB Clicks</option>
+                        <option>Bank Islam</option>
+                        <option>Bank Rakyat</option>
+                        <option>AmBank</option>
+                        <option>RHB Bank</option>
+                        <option>Affin Bank</option>
+                        <option>Alliance Bank</option>
+                        <option>Bank Muamalat</option>
+                        <option>BSN</option>
+                        <option>Hong Leong Bank</option>
+                        <option>HSBC</option>
+                        <option>KFH</option>
+                        <option>OCBC Bank</option>
+                        <option>Public Bank</option>
+                        <option>Standard Chartered</option>
+                        <option>UOB Bank</option>
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
+                </div>
+            </form>
+        </div>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <h1>WELCOME TO</h1>
+            <h1>VEHICLE SHARING</h1>
+            <h1>MANAGEMENT</h1>
+            <h1>SERVICE SYSTEM</h1>
+            <p>Rent your desire vehicle to rent</p>
+        </div>
+    </div>
+</body>
+</html>

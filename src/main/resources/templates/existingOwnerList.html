@@ -1,0 +1,65 @@
+<!-- filepath: c:\PROJECT PITA\vsms\vsms\src\main\resources\templates\existingOwnerList.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Existing Owners</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css">
+    <link rel="stylesheet" href="/css/try.css">
+    <script src="/js/try.js"></script>
+    <link rel="icon" type="image/x-icon" href="/images/logo.png">
+</head>
+<body id="body-pd">
+    <div th:replace="navbarVO :: navbar(${userID})"></div>
+    <div class="container">
+        <h1>Existing Owners</h1>
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for owners...">
+        <br>
+        <table class="table table-striped" id="ownerTable">
+            <thead>
+                <tr>
+                    <th>Owner Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="owner : ${owners}">
+                    <td th:text="${owner.ownerName}">Name</td>
+                    <td th:text="${owner.ownerEmail}">Email</td>
+                    <td th:text="${owner.ownerPhoneNumber}">Phone</td>
+                    <td>
+                        <form th:action="@{/vehicleRegister}" method="get" style="display:inline;">
+                            <input type="hidden" name="userID" th:value="${userID}" />
+                            <input type="hidden" name="ownerID" th:value="${owner.ownerID}" />
+                            <button type="submit" class="btn btn-success">Select</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" th:onclick="'window.location.href=\'/chooseOwner?userID=' + ${userID} + '\''">Back</button>
+    </div>
+    <script>
+    document.getElementById('searchInput').addEventListener('keyup', function() {
+        var searchTerm = this.value.toLowerCase();
+        var table = document.getElementById('ownerTable');
+        var rows = table.getElementsByTagName('tr');
+        for (var i = 1; i < rows.length; i++) { // skip header row
+            var cells = rows[i].getElementsByTagName('td');
+            var found = false;
+            for (var j = 0; j < cells.length; j++) {
+                var cellText = cells[j].innerText.toLowerCase();
+                if (cellText.includes(searchTerm)) {
+                    found = true;
+                    break;
+                }
+            }
+            rows[i].style.display = found ? '' : 'none';
+        }
+    });
+    </script>
+</body>
+</html>
