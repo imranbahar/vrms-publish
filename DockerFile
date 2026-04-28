@@ -1,15 +1,23 @@
 # Stage 1: Build the application
 FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
+# Copy the Maven wrapper and pom.xml first to cache dependencies
 COPY .mvn/ .mvn
 COPY mvnw pom.xml ./
 
-# --- ADD THIS LINE TO FIX THE PERMISSION ERROR ---
-RUN chmod +x mvnw 
+RUN chmod +x mvnw
 
-# Now this line will work
+# Run this to download dependencies (improves build speed)
 RUN ./mvnw dependency:go-offline
+# Copy the source code
 COPY src ./src
+# Build the application
 RUN ./mvnw clean package -DskipTests
 
-# ... (The rest of your Stage 2 remains the same)
+# Stage 2: Final Image
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /app
+# Copy only the JAR from the build stage
+COPY --from=build /app/target/*.jar app.jar
+# Start the app
+ENTRYPOINT ["java", "-jar", "app.jar"]
